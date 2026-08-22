@@ -1,50 +1,58 @@
-# Commercial-Grade Multi-Vendor E-Commerce Platform (MERN Stack)
+# 🛒 OmniMarket — Commercial-Grade Multi-Vendor E-Commerce Platform
 
-A production-ready, commercial-grade Multi-Vendor E-Commerce platform built with **React (Vite), Tailwind CSS, Redux Toolkit, Node.js, Express.js, MongoDB (Mongoose), and Stripe Webhook processing**.
+[![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.0+-purple.svg)](https://vitejs.dev/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4+-sky.svg)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-emerald.svg)](https://www.mongodb.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-Payment%20Gateways-blueviolet.svg)](https://stripe.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
----
-
-## Key Architectural Highlights
-
-### 1. Multi-Vendor Data Architecture & Split Orders
-- **Item-Level Split Fulfillment**: When a customer places an order containing products from multiple vendors, the master order tracks distinct fulfillment statuses (`Pending`, `Processing`, `Shipped`, `Delivered`, `Cancelled`), carrier tracking numbers, and dispatch timestamps per item.
-- **Automated Platform Commission & Vendor Escrow**: Calculates platform commission take (e.g., 10% default or customized per vendor) and maintains isolated net payout balances for each vendor.
-- **Vendor Payout Settlement**: Platform administrators can review earnings and release payouts once split deliveries are completed.
-
-### 2. Security & Authentication
-- **HTTP-Only Cookies**: JWT authentication tokens are signed with user ID and role, and transmitted via `httpOnly`, `sameSite`, and secure cookies to prevent XSS.
-- **Role-Based Access Control (RBAC)**: Custom Express middlewares:
-  - `protect`: Extracts and verifies JWT cookie / Bearer token.
-  - `restrictTo('Admin', 'Vendor', 'Customer')`: Enforces strict route-level authorization.
-- **Bcrypt Hashing**: Pre-save Mongoose hook for secure salted password hashing.
-
-### 3. Stripe Checkout & Atomic Webhooks
-- **Stripe Checkout Sessions**: Generates server-side payment sessions with metadata containing `orderId` and customer details.
-- **Signature-Verified Webhook Engine**: Express raw body parser (`express.raw({ type: 'application/json' })`) mounted prior to standard JSON parser, validating HMAC signatures with `stripe.webhooks.constructEvent`.
-- **Atomic MongoDB Updates**: Handles `checkout.session.completed` events to mark master orders as paid, record transaction IDs, and transition vendor payout records to pending distribution.
+A modern, full-stack **Multi-Vendor Marketplace** built with the **MERN Stack** (MongoDB, Express, React, Node.js), featuring **Stripe Escrow Payments**, **Item-Level Split Fulfillment**, **Dynamic Multi-Currency Conversion (INR ₹, USD $, EUR €, etc.)**, **Vendor & Admin Hubs**, and **Role-Based Access Control**.
 
 ---
 
-## Tech Stack
+## 🌟 Key Features
 
-| Layer | Technologies |
-|---|---|
-| **Frontend** | React 18 (Vite), Tailwind CSS, Redux Toolkit, React Router 6, Axios, Lucide Icons |
-| **Backend** | Node.js (ES Modules), Express.js, Mongoose ODM, Stripe SDK, Multer, Cloudinary |
-| **Database** | MongoDB |
-| **Security** | JWT in HTTP-Only Cookies, BcryptJS, CORS, Role-Based Access Control |
+### 🛍️ Buyer Experience
+- **Dynamic Multi-Currency System**: Instant switching between **INR (₹ - Default)**, **USD ($)**, **EUR (€)**, **GBP (£)**, **AED (AED)**, **CAD (CA$)**, **AUD (AU$)**, **SAR (SAR)**, and **JPY (¥)** with persistent user preferences.
+- **Product Discovery & Search**: Keyword search, category filters, live rating stars, discount badges, and stock availability tracking.
+- **Cart & Checkout**: Multi-vendor single-cart checkout with split vendor fulfillment breakdown, 5% estimated tax calculation, and free shipping over $100.
+- **Stripe 3D-Secure Payments**: Direct integration with Stripe Checkout and instant atomic webhook order processing.
+- **Order Tracking**: Detailed item-level tracking numbers, fulfillment statuses, and courier details across multiple vendors per order.
+
+### 🏬 Vendor Portal (Vendor Hub)
+- **Vendor Dashboard**: Real-time KPI statistics (Net settled earnings, pending escrow payouts, catalog inventory, split order tickets).
+- **Product Management**: Create, edit, and manage catalog items with image URLs, categorization, stock quantities, and base pricing.
+- **Order & Dispatch Fulfillment**: Update status (`Pending` ➔ `Processing` ➔ `Shipped` ➔ `Delivered`) and assign courier tracking numbers per item.
+- **Automated Payouts**: Clear financial breakdown of gross item amounts, platform commission take, and net escrow payouts.
+
+### 🛡️ Admin Super-Console
+- **Executive KPI Dashboard**: Real-time tracking of Gross Merchandise Volume (GMV), Platform Revenue margin, Vendor Escrow Payables, and platform accounts.
+- **Vendor Commission Management**: Dynamic vendor-specific commission adjustment (e.g. 10% default).
+- **Escrow Settlement Console**: Audit split delivery verifications and release pending vendor net payouts.
+- **User Directory**: Full CRUD management of Customer, Vendor, and Admin accounts.
 
 ---
 
-## Directory Structure
+## 🏗️ Architecture & Security Highlights
+
+1. **Item-Level Split Fulfillment**: Orders containing items from different merchants are tracked independently with dedicated fulfillment states, carriers, and delivery verification.
+2. **Automated Escrow & Commissions**: The backend automatically partitions order amounts into vendor net balances and platform commissions upon verified Stripe webhook execution.
+3. **HTTP-Only Cookies & RBAC**: JWT authentication tokens are signed and delivered via secure `httpOnly` cookies with custom middleware (`protect` and `restrictTo('Admin', 'Vendor', 'Customer')`).
+4. **Resilient MongoDB Schema**: Referenced vendor stores, embedded split fulfillment states, customer delivery addresses, and audited timestamps.
+
+---
+
+## 📂 Project Directory Structure
 
 ```
 E-commerce Platform/
 ├── backend/
 │   ├── config/
-│   │   ├── db.js                 # Resilient MongoDB connection
-│   │   ├── cloudinary.js         # Cloudinary SDK config
-│   │   └── stripe.js             # Stripe SDK initialization
+│   │   ├── db.js                 # MongoDB connection
+│   │   ├── cloudinary.js         # Cloudinary SDK setup
+│   │   └── stripe.js             # Stripe SDK configuration
 │   ├── controllers/
 │   │   ├── authController.js     # Auth, signup, login, profile
 │   │   ├── productController.js  # Catalog search, filter, vendor CRUD
@@ -53,25 +61,27 @@ E-commerce Platform/
 │   │   ├── vendorController.js   # Vendor analytics & earnings
 │   │   └── adminController.js    # Platform GMV & escrow management
 │   ├── middleware/
-│   │   ├── authMiddleware.js     # protect & restrictTo RBAC
-│   │   ├── errorMiddleware.js    # Centralized error handler
-│   │   └── uploadMiddleware.js   # Multer buffer & Cloudinary stream
+│   │   ├── authMiddleware.js     # JWT verification & RBAC guard
+│   │   ├── errorMiddleware.js    # Central error handler
+│   │   └── uploadMiddleware.js   # Multer file upload stream
 │   ├── models/
-│   │   ├── User.js               # Admin/Vendor/Customer schemas
-│   │   ├── Product.js            # Vendor reference & inventory
-│   │   └── Order.js              # Split fulfillment & payout models
-│   ├── routes/                   # Modular Express routers
+│   │   ├── User.js               # User/Vendor profile schema
+│   │   ├── Product.js            # Product & review schema
+│   │   └── Order.js              # Split fulfillment & escrow schema
+│   ├── routes/                   # Modular Express API routes
 │   ├── utils/                    # Token generator & commission math
-│   ├── seeder.js                 # Seed database with sample data
-│   ├── server.js                 # Express server bootstrap
-│   └── package.json
+│   ├── seeder.js                 # Demo data seeder script
+│   └── server.js                 # Express server bootstrap
 │
 └── frontend/
     ├── src/
-    │   ├── api/axiosClient.js    # Axios with credentials: true
+    │   ├── api/axiosClient.js    # Axios instance with credentials
     │   ├── components/
-    │   │   ├── common/           # Navbar, Footer, ProtectedRoute, Alert
-    │   │   └── product/          # ProductCard, Rating
+    │   │   ├── common/           # Navbar, Footer, CurrencySelector, Loader, Alert
+    │   │   ├── order/            # SplitOrderStatusBadge, VendorOrderSummary
+    │   │   └── product/          # ProductCard, ImageGallery, Rating
+    │   ├── hooks/
+    │   │   └── useCurrency.js    # Multi-currency hook & formatting
     │   ├── pages/
     │   │   ├── HomePage.jsx
     │   │   ├── ProductDetailsPage.jsx
@@ -82,45 +92,112 @@ E-commerce Platform/
     │   │   ├── OrderHistoryPage.jsx
     │   │   ├── LoginPage.jsx
     │   │   ├── RegisterPage.jsx
-    │   │   ├── vendor/VendorDashboardPage.jsx
-    │   │   └── admin/AdminDashboardPage.jsx
+    │   │   ├── vendor/           # VendorDashboard, VendorProducts, VendorOrders
+    │   │   └── admin/            # AdminDashboard, AdminPayouts, AdminUsers
     │   ├── redux/
-    │   │   ├── slices/           # auth, cart, product, order slices
+    │   │   ├── slices/           # auth, cart, currency, order, product slices
     │   │   └── store.js
     │   ├── App.jsx
     │   ├── main.jsx
     │   └── index.css
     ├── tailwind.config.js
-    ├── vite.config.js
-    └── package.json
+    └── vite.config.js
 ```
 
 ---
 
-## Quick Start & Running Locally
+## ⚡ Getting Started (Local Setup)
 
-### 1. Backend Setup
+### Prerequisites
+- **Node.js** (v18.0 or higher)
+- **MongoDB** (Local instance or MongoDB Atlas URI)
+- **Git**
+
+---
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/zeeshansaeed6/E-CommWeb.git
+cd E-CommWeb
+```
+
+---
+
+### 2. Backend Setup
 ```bash
 cd backend
 npm install
-npm run seed     # (Optional) Seed sample users, vendors, and products
-npm run dev      # Runs Express server on http://localhost:5000
 ```
 
-### 2. Frontend Setup
+Create a `.env` file in the `backend/` directory:
+```env
+PORT=5000
+NODE_ENV=development
+MONGO_URI=mongodb://127.0.0.1:27017/multivendor_ecommerce
+JWT_SECRET=your_super_secret_jwt_key_here
+JWT_EXPIRES_IN=30d
+CLIENT_URL=http://localhost:5173
+
+# Stripe Keys (Optional for testing)
+STRIPE_SECRET_KEY=sk_test_placeholder
+STRIPE_WEBHOOK_SECRET=whsec_placeholder
+
+# Platform Commission (%)
+PLATFORM_COMMISSION_PERCENT=10
+```
+
+Seed initial sample data (Admin, Vendors, Customers, Products, Reviews):
 ```bash
-cd frontend
-npm install
-npm run dev      # Runs Vite app on http://localhost:5173
+npm run seed
+```
+
+Start Backend Server:
+```bash
+npm run dev
+# Server running on http://localhost:5000
 ```
 
 ---
 
-## Demo Credentials (Seeded)
+### 3. Frontend Setup
+In a new terminal window:
+```bash
+cd frontend
+npm install
+npm run dev
+# Frontend running on http://localhost:5173
+```
 
-| Role | Email | Password | Details |
+---
+
+## 🔑 Demo Seed Accounts
+
+| Role | Email | Password | Access / Capabilities |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@ecommerce.com` | `password123` | Master platform console, GMV overview, escrow payouts & user directory |
+| **Vendor 1** | `techgear@vendor.com` | `password123` | **TechGear Prime**: Manage electronics catalog & split fulfillment |
+| **Vendor 2** | `urbanstyle@vendor.com` | `password123` | **UrbanStyle Boutique**: Manage fashion catalog & split fulfillment |
+| **Customer** | `sarah@customer.com` | `password123` | Customer buyer account with sample order history |
+
+---
+
+## 🌐 API Overview
+
+| Method | Endpoint | Description | Auth Required |
 |---|---|---|---|
-| **Admin** | `admin@ecommerce.com` | `password123` | Master platform dashboard, GMV & payouts |
-| **Vendor 1** | `techgear@vendor.com` | `password123` | TechGear Prime store (Audio & Tech) |
-| **Vendor 2** | `urbanstyle@vendor.com` | `password123` | UrbanStyle Boutique (Fashion & Apparel) |
-| **Customer** | `sarah@customer.com` | `password123` | Customer with sample split order |
+| `POST` | `/api/auth/register` | Register new user / vendor | Public |
+| `POST` | `/api/auth/login` | Login user & set HTTP-only cookie | Public |
+| `POST` | `/api/auth/logout` | Clear auth token cookie | Protected |
+| `GET` | `/api/products` | Get products with search & category filter | Public |
+| `GET` | `/api/products/:id` | Get single product details | Public |
+| `POST` | `/api/orders` | Create master order with split items | Protected (Customer) |
+| `GET` | `/api/orders/myorders` | Get logged-in user order history | Protected (Customer) |
+| `POST` | `/api/payments/create-checkout-session/:id` | Create Stripe checkout session | Protected |
+| `GET` | `/api/vendor/stats` | Get vendor earnings & KPI statistics | Protected (Vendor) |
+| `GET` | `/api/admin/stats` | Platform GMV, margins & escrow status | Protected (Admin) |
+| `GET` | `/api/admin/payouts` | Audit all vendor escrow payouts | Protected (Admin) |
+
+---
+
+## 📜 License
+Distributed under the **MIT License**. Feel free to use and modify for your commercial or educational projects.
