@@ -1,0 +1,62 @@
+E-commerce Platform/
+├── backend/
+│   ├── config/
+│   │   ├── db.js
+│   │   ├── cloudinary.js
+│   │   └── stripe.js
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Product.js
+│   │   └── Order.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── errorMiddleware.js
+│   │   └── uploadMiddleware.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── productController.js
+│   │   ├── orderController.js
+│   │   ├── paymentController.js
+│   │   ├── vendorController.js
+│   │   └── adminController.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── productRoutes.js
+│   │   ├── orderRoutes.js
+│   │   ├── paymentRoutes.js
+│   │   ├── vendorRoutes.js
+│   │   └── adminRoutes.js
+│   ├── utils/
+│   │   ├── generateToken.js
+│   │   └── commissionCalculator.js
+│   ├── server.js
+│   └── package.json
+└── frontend/
+    ├── src/
+    │   ├── api/
+    │   │   └── axiosClient.js
+    │   ├── components/
+    │   │   ├── common/ (Navbar, Footer, ProtectedRoute, Alert, Loader)
+    │   │   ├── product/ (ProductCard, Rating, ImageGallery)
+    │   │   └── order/ (SplitOrderStatusBadge, VendorOrderSummary)
+    │   ├── pages/
+    │   │   ├── HomePage.jsx
+    │   │   ├── ProductDetailsPage.jsx
+    │   │   ├── CartPage.jsx
+    │   │   ├── CheckoutPage.jsx
+    │   │   ├── OrderSuccessPage.jsx
+    │   │   ├── OrderHistoryPage.jsx
+    │   │   ├── LoginPage.jsx
+    │   │   ├── RegisterPage.jsx
+    │   │   ├── vendor/ (VendorDashboardPage, VendorProductsPage, VendorOrdersPage)
+    │   │   └── admin/ (AdminDashboardPage, AdminUsersPage, AdminPayoutsPage)
+    │   ├── redux/
+    │   │   ├── slices/ (authSlice.js, cartSlice.js, productSlice.js, orderSlice.js)
+    │   │   └── store.js
+    │   ├── App.jsx
+    │   ├── main.jsx
+    │   └── index.css
+    ├── index.html
+    ├── tailwind.config.js
+    ├── vite.config.js
+    └── package.json
