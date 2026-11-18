@@ -5,6 +5,7 @@ import { ShoppingCart, Store, Check, Heart } from 'lucide-react';
 import Rating from '../common/Rating';
 import { addToCart } from '../../redux/slices/cartSlice';
 import { toggleWishlist } from '../../redux/slices/wishlistSlice';
+import { toast } from '../../lib/toast';
 import useCurrency from '../../hooks/useCurrency';
 
 const ProductCard = ({ product }) => {
@@ -43,6 +44,7 @@ const ProductCard = ({ product }) => {
 
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
+    toast(`Added “${product.title}” to your cart`);
   };
 
   return (
@@ -70,6 +72,7 @@ const ProductCard = ({ product }) => {
             onClick={(e) => {
               e.preventDefault();
               dispatch(toggleWishlist(product));
+              toast(wished ? 'Removed from wishlist' : 'Saved to your wishlist', 'wish');
             }}
             aria-pressed={wished}
             aria-label={wished ? 'Remove from wishlist' : 'Save to wishlist'}

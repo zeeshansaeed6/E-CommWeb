@@ -29,6 +29,7 @@ import Rating from '../components/common/Rating';
 import Loader from '../components/common/Loader';
 import Alert from '../components/common/Alert';
 import useCurrency from '../hooks/useCurrency';
+import { toast } from '../lib/toast';
 import RecentlyViewed from '../components/product/RecentlyViewed';
 import { recordRecentlyViewed } from '../hooks/useRecentlyViewed';
 
@@ -87,6 +88,7 @@ const ProductDetailsPage = () => {
     );
 
     setAddedAlert(true);
+    toast(`Added ${typeof forcedQty === 'number' ? forcedQty : qty} × “${product.title}” to your cart`);
     setTimeout(() => setAddedAlert(false), 2500);
   };
 

@@ -4,6 +4,7 @@ import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Loader from './components/common/Loader';
+import Toaster from './components/common/Toaster';
 
 // Pages
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -38,6 +39,7 @@ function App() {
       <ScrollToTop />
       <div className="flex flex-col min-h-screen font-sans bg-slate-50 text-slate-900">
         <Navbar />
+        <Toaster />
         <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <Suspense fallback={<Loader message="Loading..." />}>
           <Routes>

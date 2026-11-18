@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { Check, Heart, ShieldCheck, Truck, BadgeCheck, Minus, Plus, ChevronDown } from 'lucide-react';
 import useCurrency from '../../hooks/useCurrency';
+import { toast } from '../../lib/toast';
 import { toggleWishlist } from '../../redux/slices/wishlistSlice';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -274,7 +275,10 @@ const LuxuryProductPage = ({ product, onAdd }) => {
                 {addLabel}
               </button>
               <button
-                onClick={() => dispatch(toggleWishlist(product))}
+                onClick={() => {
+                dispatch(toggleWishlist(product));
+                toast(wished ? 'Removed from wishlist' : 'Saved to your wishlist', 'wish');
+              }}
                 aria-pressed={wished}
                 aria-label={wished ? 'Remove from wishlist' : 'Save to wishlist'}
                 className="w-12 h-12 rounded-full border border-[#cfc9bb] bg-white grid place-items-center hover:scale-105 active:scale-95 transition flex-shrink-0"

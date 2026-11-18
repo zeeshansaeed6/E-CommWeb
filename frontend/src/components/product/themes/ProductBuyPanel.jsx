@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Check, Heart, Minus, Plus, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import useCurrency from '../../../hooks/useCurrency';
+import { toast } from '../../../lib/toast';
 import { toggleWishlist } from '../../../redux/slices/wishlistSlice';
 
 const PERKS = [
@@ -67,7 +68,10 @@ const ProductBuyPanel = ({ product, onAdd, accent, bg, fg, muted, btnText = '#ff
               {added ? 'Added to cart' : `Add to cart · ${formatPrice(price * qty)}`}
             </button>
             <button
-              onClick={() => dispatch(toggleWishlist(product))}
+              onClick={() => {
+                dispatch(toggleWishlist(product));
+                toast(wished ? 'Removed from wishlist' : 'Saved to your wishlist', 'wish');
+              }}
               aria-pressed={wished}
               aria-label={wished ? 'Remove from wishlist' : 'Save to wishlist'}
               className={`w-12 h-12 ${round} border grid place-items-center hover:scale-105 active:scale-95 transition flex-shrink-0`}
