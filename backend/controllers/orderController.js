@@ -24,6 +24,11 @@ export const createOrder = async (req, res, next) => {
     let itemsPrice = 0;
 
     for (const item of orderItems) {
+      if (!Number.isInteger(item.qty) || item.qty < 1 || item.qty > 100) {
+        res.status(400);
+        throw new Error('Item quantity must be a whole number between 1 and 100');
+      }
+
       const productDoc = await Product.findById(item.product);
       if (!productDoc) {
         res.status(404);
@@ -71,14 +76,28 @@ export const createOrder = async (req, res, next) => {
       overallFulfillmentStatus: 'Unfulfilled',
     });
 
-    const createdOrder = await order.save();
-
-    // Decrement product inventory
-    for (const item of populatedOrderItems) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.qty },
-      });
+    // Reserve stock atomically (guards against overselling under concurrent checkouts)
+    const reserved = [];
+    try {
+      for (const item of populatedOrderItems) {
+        const ok = await Product.findOneAndUpdate(
+          { _id: item.product, stock: { $gte: item.qty } },
+          { $inc: { stock: -item.qty } }
+        );
+        if (!ok) {
+          res.status(409);
+          throw new Error(`"${item.title}" just went out of stock. Please review your cart.`);
+        }
+        reserved.push(item);
+      }
+    } catch (err) {
+      for (const item of reserved) {
+        await Product.findByIdAndUpdate(item.product, { $inc: { stock: item.qty } });
+      }
+      throw err;
     }
+
+    const createdOrder = await order.save();
 
     res.status(201).json({
       success: true,
@@ -109,7 +128,7 @@ export const getOrderById = async (req, res, next) => {
     const isCustomer = order.customer._id.toString() === req.user._id.toString();
     const isAdmin = req.user.role === 'Admin';
     const isVendorInOrder = order.orderItems.some(
-      (item) => item.vendor._id.toString() === req.user._id.toString()
+      (item) => item.vendor?._id?.toString() === req.user._id.toString()
     );
 
     if (!isCustomer && !isAdmin && !isVendorInOrder) {

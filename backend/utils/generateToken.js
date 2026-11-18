@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken';
 export const generateToken = (res, userId, role) => {
   const token = jwt.sign(
     { userId, role },
-    process.env.JWT_SECRET || 'fallback_secret_multivendor_ecommerce',
+    process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? undefined : 'dev_only_secret'),
     {
       expiresIn: process.env.JWT_EXPIRES_IN || '30d',
     }

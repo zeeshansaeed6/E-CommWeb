@@ -8,12 +8,12 @@ export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, role, storeName, storeDescription } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || String(password).length < 6) {
       res.status(400);
-      throw new Error('Please provide name, email, and password');
+      throw new Error('Please provide name, email, and a password of at least 6 characters');
     }
 
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: String(email).toLowerCase().trim() });
     if (userExists) {
       res.status(400);
       throw new Error('User already exists with this email');
@@ -24,7 +24,7 @@ export const registerUser = async (req, res, next) => {
 
     const user = await User.create({
       name,
-      email,
+      email: String(email).toLowerCase().trim(),
       password,
       role: userRole,
       vendorDetails: userRole === 'Vendor' ? {
@@ -72,7 +72,7 @@ export const loginUser = async (req, res, next) => {
       throw new Error('Please provide email and password');
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email: String(email).toLowerCase().trim() }).select('+password');
 
     if (!user || !(await user.matchPassword(password))) {
       res.status(401);
