@@ -109,7 +109,7 @@ const importData = async () => {
         numReviews: 42,
         isFeatured: true,
         images: [
-          { url: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80' },
+          { url: 'https://images.unsplash.com/photo-1585792180666-f7347c490ee2?auto=format&fit=crop&w=1400&q=80' },
         ],
         tags: ['monitor', '4k', 'display', 'gaming'],
       },
@@ -126,7 +126,8 @@ const importData = async () => {
         numReviews: 19,
         isFeatured: false,
         images: [
-          { url: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80' },
+          { url: 'https://images.unsplash.com/photo-1555532538-dcdbd01d373d?auto=format&fit=crop&w=1400&q=80' },
+          { url: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=1400&q=80' },
         ],
         tags: ['keyboard', 'rgb', 'gaming'],
       },

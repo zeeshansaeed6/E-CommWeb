@@ -128,7 +128,7 @@ try {
       title: 'Lumina X5 Mirrorless Camera',
       description: 'A 24 MP sensor, fast hybrid autofocus and 4K video in a compact body. Weather-sealed and ready for travel.',
       price: 899, discountPrice: 829, category: 'Electronics', brand: 'Lumina', stock: 9, rating: 4.8, numReviews: 33, isFeatured: true,
-      images: [img('1516035069371-29a1b244cc32')], tags: ['camera', 'photography'],
+      images: [img('1510127034890-ba27508e9f1c')], tags: ['camera', 'photography'],
     },
     {
       vendor: tech._id,
