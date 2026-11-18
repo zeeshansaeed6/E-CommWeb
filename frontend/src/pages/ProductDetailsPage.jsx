@@ -82,6 +82,8 @@ const ProductDetailsPage = () => {
         discountPrice: product.discountPrice,
         image: product.images?.[0]?.url || '',
         stock: product.stock,
+        category: product.category,
+        theme: product.theme,
         vendor: product.vendor?._id || product.vendor,
         qty: Number(typeof forcedQty === 'number' ? forcedQty : qty),
       })

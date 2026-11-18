@@ -25,6 +25,7 @@ export const toSnapshot = (p) => ({
   price: p.price,
   discountPrice: p.discountPrice,
   category: p.category,
+  theme: p.theme,
   images: p.images?.slice(0, 1) || [],
   vendor:
     p.vendor && typeof p.vendor === 'object'

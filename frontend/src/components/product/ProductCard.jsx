@@ -37,6 +37,8 @@ const ProductCard = ({ product }) => {
         discountPrice: product.discountPrice,
         image: mainImage,
         stock: product.stock,
+        category: product.category,
+        theme: product.theme,
         vendor: product.vendor?._id || product.vendor,
         qty: 1,
       })

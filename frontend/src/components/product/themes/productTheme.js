@@ -28,6 +28,23 @@ export const POOLS = {
   energy: ['#c6ff00', '#00e5ff', '#ff3d00', '#ff2e93', '#ffe600', '#7cff6b'],
   soft: ['#e8a0b4', '#d9a066', '#b79ced', '#8ecfc9', '#f0b27a', '#e5989b'],
   cozy: ['#c1583a', '#7a8b5c', '#b8863b', '#8c5e4a', '#5f7f86', '#a4503f'],
+  tech: ['#0071e3', '#5e5ce6', '#30b0c7', '#ff9f0a'],
+  luxury: ['#c9b27c'],
+};
+
+export const THEME_LABELS = {
+  tech: 'Tech',
+  editorial: 'Editorial',
+  energy: 'Energy',
+  soft: 'Soft',
+  cozy: 'Cozy',
+  luxury: 'Luxury',
+};
+
+// Theme, label and accent for anything product-shaped (a product, wishlist snapshot or cart item)
+export const itemStyle = (item) => {
+  const theme = themeFor(item);
+  return { theme, label: THEME_LABELS[theme], accent: accentFor(item, POOLS[theme]) };
 };
 
 export const accentFor = (product, pool) => pool[hash(product._id || product.title) % pool.length];
