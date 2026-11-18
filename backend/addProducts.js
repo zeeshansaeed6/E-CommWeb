@@ -150,7 +150,7 @@ try {
       title: 'StudioLine Wired Headphones',
       description: 'Tuned for accurate studio sound with plush memory-foam ear cushions and a detachable cable. Folds flat for the bag.',
       price: 99, discountPrice: 0, category: 'Electronics', brand: 'StudioLine', stock: 65, rating: 4.4, numReviews: 31,
-      images: [img('1584917865442-de89df76afd3')], tags: ['audio', 'studio'],
+      images: [img('1583394838336-acd977736f90')], tags: ['audio', 'studio'],
     },
     {
       vendor: urban._id,
@@ -171,7 +171,7 @@ try {
       title: 'Retro Graphic Tee',
       description: 'A midweight cotton tee with a bold screen-printed graphic that stays sharp wash after wash. Relaxed, easy fit.',
       price: 35, discountPrice: 0, category: 'Fashion & Apparel', brand: 'Common Thread', stock: 120, rating: 4.3, numReviews: 64,
-      images: [img('1583394838336-acd977736f90')], tags: ['tee', 'graphic'],
+      images: [img('1576566588028-4147f3842f27')], tags: ['tee', 'graphic'],
     },
     {
       vendor: urban._id,
@@ -212,7 +212,11 @@ try {
 
   let added = 0;
   for (const p of products) {
-    if (await Product.exists({ title: p.title })) continue;
+    // Existing products keep their data but have their images re-synced from this file
+    if (await Product.exists({ title: p.title })) {
+      await Product.updateOne({ title: p.title }, { $set: { images: p.images } });
+      continue;
+    }
     await Product.create(p);
     added += 1;
   }
