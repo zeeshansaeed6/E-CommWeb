@@ -12,7 +12,8 @@ import ProductBuyPanel from './ProductBuyPanel';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
-const BLEED = 'relative w-screen ml-[calc(50%-50vw)]';
+// overflow-x-clip: transformed children (tilts, scales) must never widen the page, or phones zoom out
+const BLEED = 'relative w-screen ml-[calc(50%-50vw)] overflow-x-clip';
 const PAPER = '#f3efe8';
 const INK = '#111111';
 const HEAD = 'font-display font-black uppercase tracking-[-0.04em]';
@@ -145,18 +146,20 @@ const EditorialProductPage = ({ product, onAdd }) => {
       </section>
 
       {/* ───────── Marquee ───────── */}
-      <div className={`${BLEED} overflow-hidden py-5 -rotate-1 scale-[1.03]`} style={{ backgroundColor: accent }} aria-hidden="true">
+      <div className={`${BLEED} py-4`} aria-hidden="true">
+       <div className="overflow-hidden py-5 -rotate-1 scale-[1.03]" style={{ backgroundColor: accent }}>
         <div className="ed-track flex w-max whitespace-nowrap will-change-transform">
           <span className={`${HEAD} italic text-4xl sm:text-6xl text-white pr-8`}>{marquee}</span>
           <span className={`${HEAD} italic text-4xl sm:text-6xl text-white pr-8`}>{marquee}</span>
         </div>
+       </div>
       </div>
 
       {/* ───────── Sticky gallery + story ───────── */}
       <section className={`${BLEED} px-5 py-24`} style={{ backgroundColor: PAPER }}>
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10">
-          <div className="lg:sticky self-start" style={{ top: 'calc(var(--nav-h, 80px) + 1.5rem)' }}>
-            <div className="relative aspect-[4/5] max-h-[78vh] mx-auto overflow-hidden shadow-[0_30px_70px_-25px_rgba(0,0,0,.4)]">
+          <div className="sticky z-10 self-start pb-3 max-lg:bg-[#f3efe8] lg:pb-0" style={{ top: 'calc(var(--nav-h, 80px) + 0.5rem)' }}>
+            <div className="relative aspect-[16/10] max-lg:max-h-[30vh] lg:aspect-[4/5] lg:max-h-[78vh] mx-auto overflow-hidden shadow-[0_30px_70px_-25px_rgba(0,0,0,.4)]">
               {beats.map((_, i) => (
                 <div key={i} className="ed-slide absolute inset-0 overflow-hidden">
                   <img
@@ -175,8 +178,8 @@ const EditorialProductPage = ({ product, onAdd }) => {
 
           <div className="ed-steps">
             {beats.map((b, i) => (
-              <div key={i} className="ed-step min-h-[70svh] flex flex-col justify-center">
-                <p className="ed-step-item font-display font-black text-[9rem] leading-none" style={{ color: 'transparent', WebkitTextStroke: `2px ${accent}` }}>
+              <div key={i} className="ed-step min-h-[40svh] py-8 lg:min-h-[70svh] lg:py-0 flex flex-col justify-center">
+                <p className="ed-step-item font-display font-black text-[5rem] lg:text-[9rem] leading-none" style={{ color: 'transparent', WebkitTextStroke: `2px ${accent}` }}>
                   {String(i + 1).padStart(2, '0')}
                 </p>
                 <p className={`ed-step-item ${HEAD} mt-2 text-3xl sm:text-5xl leading-[1.05] normal-case`} style={{ textTransform: 'none', letterSpacing: '-0.03em' }}>{b}</p>

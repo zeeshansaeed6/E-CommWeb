@@ -10,7 +10,8 @@ import ProductBuyPanel from './ProductBuyPanel';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const BLEED = 'relative w-screen ml-[calc(50%-50vw)]';
+// overflow-x-clip: transformed children (tilts, scales) must never widen the page, or phones zoom out
+const BLEED = 'relative w-screen ml-[calc(50%-50vw)] overflow-x-clip';
 const INK = '#0a0a0b';
 const HEAD = 'font-display font-black italic uppercase tracking-[-0.03em]';
 const PARALLELOGRAM = 'polygon(9% 0, 100% 0, 91% 100%, 0 100%)';
@@ -127,7 +128,7 @@ const EnergyProductPage = ({ product, onAdd }) => {
         className={`en-hero ${BLEED} -mt-8 sm:-mt-12 overflow-hidden px-5 flex items-center`}
         style={{ backgroundColor: INK, minHeight: 'calc(100svh - var(--nav-h, 80px))' }}
       >
-        <div className="en-slab absolute inset-y-0 right-0 w-[62%] overflow-hidden" style={{ backgroundColor: accent, clipPath: 'polygon(24% 0, 100% 0, 100% 100%, 0 100%)' }} aria-hidden="true">
+        <div className="en-slab absolute inset-y-0 right-0 w-[62%] max-lg:top-[46%] max-lg:w-[85%] overflow-hidden" style={{ backgroundColor: accent, clipPath: 'polygon(24% 0, 100% 0, 100% 100%, 0 100%)' }} aria-hidden="true">
           <div className="en-lines absolute inset-y-0 -left-[10%] w-[130%] opacity-25" style={{ background: 'repeating-linear-gradient(105deg, transparent 0 26px, #000 26px 29px)' }} />
         </div>
 
@@ -138,7 +139,7 @@ const EnergyProductPage = ({ product, onAdd }) => {
             </p>
             <h1 className={`en-title ${HEAD} mt-5 text-[clamp(2.5rem,6.6vw,6.25rem)] leading-[0.9] -skew-x-6`}>
               {words.map((w, i) => (
-                <span key={i} className="en-word inline-block mr-[0.2em]" style={i % 3 === 1 ? { color: accent } : undefined}>
+                <span key={i} className={`en-word inline-block mr-[0.2em] ${i % 3 === 1 ? 'lg:[color:var(--wa)]' : ''}`} style={i % 3 === 1 ? { '--wa': accent } : undefined}>
                   {w}
                 </span>
               ))}

@@ -34,7 +34,7 @@ const ProductBuyPanel = ({ product, onAdd, accent, bg, fg, muted, btnText = '#ff
   };
 
   return (
-    <section id="buy" className="relative w-screen ml-[calc(50%-50vw)] px-5 py-24 scroll-mt-24" style={{ backgroundColor: bg, color: fg }}>
+    <section id="buy" className="relative w-screen ml-[calc(50%-50vw)] overflow-x-clip px-5 py-24 scroll-mt-24" style={{ backgroundColor: bg, color: fg }}>
       <div className="max-w-4xl mx-auto text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.35em]" style={{ color: accent }}>Make it yours</p>
         <h2 className={`mt-4 text-4xl sm:text-6xl ${headingClass}`}>{product.title}</h2>
@@ -49,8 +49,8 @@ const ProductBuyPanel = ({ product, onAdd, accent, bg, fg, muted, btnText = '#ff
         </p>
 
         {product.stock > 0 && (
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xl mx-auto">
-            <div className={`flex items-center ${round} border`} style={{ borderColor: `${fg}33` }}>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3 max-w-xl mx-auto">
+            <div className={`order-1 flex items-center ${round} border`} style={{ borderColor: `${fg}33` }}>
               <button onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Decrease quantity" className={`w-12 h-12 grid place-items-center ${round} hover:bg-black/5`}>
                 <Minus className="w-4 h-4" />
               </button>
@@ -62,7 +62,7 @@ const ProductBuyPanel = ({ product, onAdd, accent, bg, fg, muted, btnText = '#ff
             <button
               onClick={handleAdd}
               style={{ backgroundColor: added ? '#16a34a' : accent, color: added ? '#fff' : btnText }}
-              className={`flex-1 w-full h-12 ${round} text-sm font-bold tracking-wide flex items-center justify-center gap-2 hover:brightness-110 active:scale-[.98] transition`}
+              className={`order-3 sm:order-2 basis-full sm:basis-0 sm:flex-1 h-12 ${round} text-sm font-bold tracking-wide flex items-center justify-center gap-2 hover:brightness-110 active:scale-[.98] transition`}
             >
               {added && <Check className="w-4 h-4" />}
               {added ? 'Added to cart' : `Add to cart · ${formatPrice(price * qty)}`}
@@ -74,7 +74,7 @@ const ProductBuyPanel = ({ product, onAdd, accent, bg, fg, muted, btnText = '#ff
               }}
               aria-pressed={wished}
               aria-label={wished ? 'Remove from wishlist' : 'Save to wishlist'}
-              className={`w-12 h-12 ${round} border grid place-items-center hover:scale-105 active:scale-95 transition flex-shrink-0`}
+              className={`order-2 sm:order-3 w-12 h-12 ${round} border grid place-items-center hover:scale-105 active:scale-95 transition flex-shrink-0`}
               style={{ borderColor: `${fg}33` }}
             >
               <Heart className={`w-5 h-5 ${wished ? 'fill-rose-500 text-rose-500' : ''}`} />

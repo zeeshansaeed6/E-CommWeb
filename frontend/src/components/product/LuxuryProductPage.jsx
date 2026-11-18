@@ -11,7 +11,8 @@ import { toggleWishlist } from '../../redux/slices/wishlistSlice';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const BLEED = 'relative w-screen ml-[calc(50%-50vw)]';
+// overflow-x-clip: transformed children (tilts, scales) must never widen the page, or phones zoom out
+const BLEED = 'relative w-screen ml-[calc(50%-50vw)] overflow-x-clip';
 const SERIF = 'font-serif font-medium tracking-tight';
 const GREEN = '#0b3d2c';
 const GOLD = '#c9b27c';
@@ -256,8 +257,8 @@ const LuxuryProductPage = ({ product, onAdd }) => {
           </p>
 
           {product.stock > 0 && (
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xl mx-auto">
-              <div className="flex items-center rounded-full border border-[#cfc9bb] bg-white">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3 max-w-xl mx-auto">
+              <div className="order-1 flex items-center rounded-full border border-[#cfc9bb] bg-white">
                 <button onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Decrease quantity" className="w-12 h-12 grid place-items-center hover:bg-[#f0ede4] rounded-full">
                   <Minus className="w-4 h-4" />
                 </button>
@@ -269,7 +270,7 @@ const LuxuryProductPage = ({ product, onAdd }) => {
               <button
                 onClick={handleAdd}
                 style={{ backgroundColor: added ? '#1f7a4f' : GREEN }}
-                className="flex-1 w-full h-12 rounded-full text-white text-sm font-semibold tracking-wide flex items-center justify-center gap-2 hover:brightness-110 active:scale-[.98] transition"
+                className="order-3 sm:order-2 basis-full sm:basis-0 sm:flex-1 h-12 rounded-full text-white text-sm font-semibold tracking-wide flex items-center justify-center gap-2 hover:brightness-110 active:scale-[.98] transition"
               >
                 {added && <Check className="w-4 h-4" />}
                 {addLabel}
@@ -281,7 +282,7 @@ const LuxuryProductPage = ({ product, onAdd }) => {
               }}
                 aria-pressed={wished}
                 aria-label={wished ? 'Remove from wishlist' : 'Save to wishlist'}
-                className="w-12 h-12 rounded-full border border-[#cfc9bb] bg-white grid place-items-center hover:scale-105 active:scale-95 transition flex-shrink-0"
+                className="order-2 sm:order-3 w-12 h-12 rounded-full border border-[#cfc9bb] bg-white grid place-items-center hover:scale-105 active:scale-95 transition flex-shrink-0"
               >
                 <Heart className={`w-5 h-5 ${wished ? 'fill-rose-500 text-rose-500' : ''}`} />
               </button>

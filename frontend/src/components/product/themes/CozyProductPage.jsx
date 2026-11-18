@@ -9,7 +9,8 @@ import ProductBuyPanel from './ProductBuyPanel';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const BLEED = 'relative w-screen ml-[calc(50%-50vw)]';
+// overflow-x-clip: transformed children (tilts, scales) must never widen the page, or phones zoom out
+const BLEED = 'relative w-screen ml-[calc(50%-50vw)] overflow-x-clip';
 const PAPER = '#f2ebdf';
 const DEEP = '#e8dfcf';
 const INK = '#3b2f25';
@@ -134,8 +135,8 @@ const CozyProductPage = ({ product, onAdd }) => {
       {/* ───────── Story ───────── */}
       <section className={`${BLEED} px-5 py-24`} style={{ backgroundColor: DEEP }}>
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10">
-          <div className="lg:sticky self-start" style={{ top: 'calc(var(--nav-h, 80px) + 1.5rem)' }}>
-            <div className="cz-sticky-frame relative aspect-square max-h-[74vh] mx-auto rounded-[2.5rem] overflow-hidden border-[10px] shadow-[0_30px_60px_-28px_rgba(59,47,37,.55)]" style={{ borderColor: '#fffaf1' }}>
+          <div className="sticky z-10 self-start pb-3 max-lg:bg-[#e8dfcf] lg:pb-0" style={{ top: 'calc(var(--nav-h, 80px) + 0.5rem)' }}>
+            <div className="cz-sticky-frame relative aspect-[16/10] max-lg:max-h-[30vh] lg:aspect-square lg:max-h-[74vh] mx-auto rounded-[2.5rem] overflow-hidden border-[10px] shadow-[0_30px_60px_-28px_rgba(59,47,37,.55)]" style={{ borderColor: '#fffaf1' }}>
               {beats.map((_, i) => (
                 <img
                   key={i}
@@ -152,7 +153,7 @@ const CozyProductPage = ({ product, onAdd }) => {
             <div className="absolute left-[11px] top-0 bottom-0 w-0.5 rounded" style={{ backgroundColor: `${INK}22` }} aria-hidden="true" />
             <div className="cz-line-fill absolute left-[11px] top-0 bottom-0 w-0.5 rounded" style={{ backgroundColor: accent }} aria-hidden="true" />
             {beats.map((b, i) => (
-              <div key={i} className="cz-step relative min-h-[62svh] flex items-center">
+              <div key={i} className="cz-step relative min-h-[36svh] py-6 lg:min-h-[62svh] lg:py-0 flex items-center">
                 <span className="cz-dot absolute -left-10 sm:-left-14 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2" style={{ backgroundColor: PAPER, borderColor: accent }} aria-hidden="true" />
                 <div className="cz-step-body">
                   <p className="text-xs font-bold uppercase tracking-[0.3em]" style={{ color: accent }}>{String(i + 1).padStart(2, '0')} · {KICKERS[i]}</p>

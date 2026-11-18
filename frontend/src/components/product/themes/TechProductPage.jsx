@@ -13,7 +13,8 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 const BLUE = '#0071e3';
 const SKY = '#2997ff';
 const INK = '#05070d';
-const BLEED = 'relative w-screen ml-[calc(50%-50vw)]';
+// overflow-x-clip: transformed children (tilts, scales) must never widen the page, or phones zoom out
+const BLEED = 'relative w-screen ml-[calc(50%-50vw)] overflow-x-clip';
 const TITLE = 'font-sans font-semibold tracking-[-0.045em]';
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80';
 

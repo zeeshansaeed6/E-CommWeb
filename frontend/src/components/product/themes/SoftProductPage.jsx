@@ -10,7 +10,8 @@ import ProductBuyPanel from './ProductBuyPanel';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const BLEED = 'relative w-screen ml-[calc(50%-50vw)]';
+// overflow-x-clip: transformed children (tilts, scales) must never widen the page, or phones zoom out
+const BLEED = 'relative w-screen ml-[calc(50%-50vw)] overflow-x-clip';
 const CREAM = '#fbf6f1';
 const INK = '#3a2a2a';
 const SERIF = 'font-serif italic font-medium tracking-tight';
