@@ -79,7 +79,12 @@ export const updateVendorConfig = async (req, res, next) => {
       vendor.vendorDetails.isApproved = isApproved;
     }
     if (commissionRate !== undefined) {
-      vendor.vendorDetails.commissionRate = Number(commissionRate);
+      const rate = Number(commissionRate);
+      if (!Number.isFinite(rate) || rate < 0 || rate > 100) {
+        res.status(400);
+        throw new Error('Commission rate must be a number between 0 and 100');
+      }
+      vendor.vendorDetails.commissionRate = rate;
     }
 
     await vendor.save();
