@@ -1,59 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  MapPin,
-  CreditCard,
-  CheckCircle2,
-  Lock,
-  ArrowLeft,
-  Truck,
-  Store,
-  ShieldCheck,
-} from 'lucide-react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { MapPin, CreditCard, Lock, ArrowLeft, ShieldCheck, Check } from 'lucide-react';
 import { saveShippingAddress, savePaymentMethod, clearCart } from '../redux/slices/cartSlice';
 import { createOrder, initiateStripeCheckout } from '../redux/slices/orderSlice';
 import Alert from '../components/common/Alert';
-import Loader from '../components/common/Loader';
 import useCurrency from '../hooks/useCurrency';
+import ThemedThumb from '../components/common/ThemedThumb';
+import BagColorStrip from '../components/common/BagColorStrip';
+import { itemStyle } from '../components/product/themes/productTheme';
+
+gsap.registerPlugin(useGSAP);
+
+const INPUT =
+  'w-full rounded-2xl bg-slate-50 px-4 py-3.5 text-sm text-slate-900 ring-1 ring-slate-200 placeholder-slate-400 transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900';
+
+const Field = ({ label, children }) => (
+  <label className="block">
+    <span className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-slate-500">{label}</span>
+    {children}
+  </label>
+);
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const root = useRef(null);
   const { formatPrice } = useCurrency();
 
   const { userInfo } = useSelector((state) => state.auth);
-  const { cartItems, shippingAddress, itemsPrice, taxPrice, shippingPrice, totalPrice } =
-    useSelector((state) => state.cart);
+  const { cartItems, shippingAddress, itemsPrice, taxPrice, shippingPrice, totalPrice } = useSelector((state) => state.cart);
   const { loading: orderLoading, error: orderError } = useSelector((state) => state.order);
 
   const [street, setStreet] = useState(shippingAddress.street || userInfo?.address?.street || '');
   const [city, setCity] = useState(shippingAddress.city || userInfo?.address?.city || '');
   const [state, setState] = useState(shippingAddress.state || userInfo?.address?.state || '');
-  const [postalCode, setPostalCode] = useState(
-    shippingAddress.postalCode || userInfo?.address?.postalCode || ''
-  );
-  const [country, setCountry] = useState(
-    shippingAddress.country || userInfo?.address?.country || 'United States'
-  );
+  const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || userInfo?.address?.postalCode || '');
+  const [country, setCountry] = useState(shippingAddress.country || userInfo?.address?.country || 'United States');
   const [paymentMethod, setPaymentMethod] = useState('Stripe');
   const [processing, setProcessing] = useState(false);
   const [localError, setLocalError] = useState('');
 
+  const addressDone = Boolean(street && city && state && postalCode && country);
+
   useEffect(() => {
-    if (!userInfo) {
-      navigate('/login?redirect=/checkout');
-    }
-    if (cartItems.length === 0) {
-      navigate('/cart');
-    }
+    if (!userInfo) navigate('/login?redirect=/checkout');
+    if (cartItems.length === 0) navigate('/cart');
   }, [userInfo, cartItems, navigate]);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.from('.co-head > *', { y: 24, opacity: 0, duration: 0.8, stagger: 0.08, ease: 'power3.out' });
+        gsap.from('.co-card', { y: 40, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out', delay: 0.1 });
+        gsap.from('.co-summary', { x: 40, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.2 });
+      });
+      return () => mm.revert();
+    },
+    { scope: root }
+  );
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setLocalError('');
 
-    if (!street || !city || !state || !postalCode || !country) {
+    if (!addressDone) {
       setLocalError('Please complete all shipping address fields');
       return;
     }
@@ -99,204 +113,154 @@ const CheckoutPage = () => {
     }
   };
 
+  const steps = [
+    ['Shipping', addressDone],
+    ['Payment', addressDone && Boolean(paymentMethod)],
+    ['Review', false],
+  ];
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate('/cart')}
-          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
+    <div ref={root} className="max-w-6xl mx-auto space-y-10">
+      <div className="co-head space-y-6">
+        <button onClick={() => navigate('/cart')} className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-slate-900">
+          <ArrowLeft className="h-4 w-4" /> Back to bag
         </button>
-        <div>
-          <h1 className="text-3xl font-display font-extrabold text-slate-900">Secure Checkout</h1>
-          <p className="text-xs text-slate-500 mt-0.5">Complete your multi-vendor split fulfillment order</p>
-        </div>
+        <h1 className="text-5xl sm:text-6xl font-sans font-semibold tracking-[-0.045em] text-slate-900">Check out.</h1>
+
+        <ol className="flex items-center gap-3 text-sm" aria-label="Checkout progress">
+          {steps.map(([name, done], i) => (
+            <React.Fragment key={name}>
+              <li className="flex items-center gap-2">
+                <span className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition-colors ${done ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                  {done ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                </span>
+                <span className={done ? 'font-semibold text-slate-900' : 'text-slate-500'}>{name}</span>
+              </li>
+              {i < steps.length - 1 && <span className="h-px w-8 bg-slate-300 sm:w-14" aria-hidden="true" />}
+            </React.Fragment>
+          ))}
+        </ol>
       </div>
 
-      {(localError || orderError) && (
-        <Alert type="error" message={localError || orderError} onClose={() => setLocalError('')} />
-      )}
+      {(localError || orderError) && <Alert type="error" message={localError || orderError} onClose={() => setLocalError('')} />}
 
       <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Shipping & Payment Config */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Shipping Address Box */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
-            <div className="flex items-center gap-2.5 text-slate-900 border-b border-slate-100 pb-3">
-              <MapPin className="w-5 h-5 text-brand-600" />
-              <h2 className="font-display font-bold text-base">1. Shipping Address</h2>
+          {/* Shipping */}
+          <section className="co-card rounded-[2rem] bg-white p-7 sm:p-9 ring-1 ring-slate-200/70 space-y-6">
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-slate-900 text-white">
+                <MapPin className="h-5 w-5" />
+              </span>
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Where should we send it?</h2>
             </div>
 
-            <div className="space-y-4 text-xs">
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Street Address</label>
-                <input
-                  type="text"
-                  required
-                  value={street}
-                  onChange={(e) => setStreet(e.target.value)}
-                  placeholder="e.g. 742 Evergreen Terrace, Apt 4B"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                />
-              </div>
+            <Field label="Street address">
+              <input type="text" required value={street} onChange={(e) => setStreet(e.target.value)} placeholder="742 Evergreen Terrace, Apt 4B" autoComplete="street-address" className={INPUT} />
+            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="City">
+                <input type="text" required value={city} onChange={(e) => setCity(e.target.value)} placeholder="San Francisco" autoComplete="address-level2" className={INPUT} />
+              </Field>
+              <Field label="State / Province">
+                <input type="text" required value={state} onChange={(e) => setState(e.target.value)} placeholder="CA" autoComplete="address-level1" className={INPUT} />
+              </Field>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Postal code">
+                <input type="text" required value={postalCode} onChange={(e) => setPostalCode(e.target.value)} placeholder="94102" autoComplete="postal-code" className={INPUT} />
+              </Field>
+              <Field label="Country">
+                <input type="text" required value={country} onChange={(e) => setCountry(e.target.value)} placeholder="United States" autoComplete="country-name" className={INPUT} />
+              </Field>
+            </div>
+          </section>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">City</label>
-                  <input
-                    type="text"
-                    required
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder="e.g. San Francisco"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">State / Province</label>
-                  <input
-                    type="text"
-                    required
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                    placeholder="e.g. CA"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                  />
-                </div>
-              </div>
+          {/* Payment */}
+          <section className="co-card rounded-[2rem] bg-white p-7 sm:p-9 ring-1 ring-slate-200/70 space-y-6">
+            <div className="flex items-center gap-3">
+              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-slate-900 text-white">
+                <CreditCard className="h-5 w-5" />
+              </span>
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900">How would you like to pay?</h2>
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
+            <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl p-5 ring-2 ring-slate-900 bg-slate-50">
+              <div className="flex items-center gap-4">
+                <input type="radio" name="payment" checked={paymentMethod === 'Stripe'} onChange={() => setPaymentMethod('Stripe')} className="h-4 w-4 accent-slate-900" />
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Postal Code</label>
-                  <input
-                    type="text"
-                    required
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                    placeholder="e.g. 94102"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Country</label>
-                  <input
-                    type="text"
-                    required
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    placeholder="e.g. United States"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-                  />
+                  <span className="block text-sm font-semibold text-slate-900">Card, Apple Pay or Google Pay</span>
+                  <span className="text-xs text-slate-500">Secure Stripe Checkout with instant confirmation.</span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Payment Method Selector */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-5">
-            <div className="flex items-center gap-2.5 text-slate-900 border-b border-slate-100 pb-3">
-              <CreditCard className="w-5 h-5 text-brand-600" />
-              <h2 className="font-display font-bold text-base">2. Payment Gateway</h2>
-            </div>
-
-            <div className="space-y-3">
-              <label className="flex items-center justify-between p-4 rounded-2xl border-2 border-brand-500 bg-brand-50/40 cursor-pointer transition-all">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="payment"
-                    checked={paymentMethod === 'Stripe'}
-                    onChange={() => setPaymentMethod('Stripe')}
-                    className="text-brand-600 focus:ring-brand-500"
-                  />
-                  <div>
-                    <span className="text-xs font-bold text-slate-900 block">
-                      Stripe 3D-Secure (Card / Apple Pay / Google Pay)
-                    </span>
-                    <span className="text-[11px] text-slate-500">
-                      Redirects to official Stripe Checkout session with instant webhook fulfillment
-                    </span>
-                  </div>
-                </div>
-                <Lock className="w-4 h-4 text-brand-600" />
-              </label>
-            </div>
-          </div>
+              <Lock className="h-4 w-4 flex-shrink-0 text-slate-700" />
+            </label>
+          </section>
         </div>
 
-        {/* Order Review & Placement Summary */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
-          <h2 className="text-base font-display font-bold text-slate-900 border-b border-slate-100 pb-3">
-            Review Split Fulfillment Items
-          </h2>
+        {/* Summary */}
+        <aside className="co-summary lg:col-span-5 lg:sticky lg:top-28 rounded-[2rem] bg-slate-950 p-7 sm:p-8 text-white shadow-2xl space-y-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/50">Your order</p>
+            <BagColorStrip items={cartItems} className="mt-4" />
+          </div>
 
-          {/* Cart preview */}
-          <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+          <ul className="max-h-72 space-y-4 overflow-y-auto pr-1">
             {cartItems.map((item) => {
-              const currentPrice = item.discountPrice > 0 ? item.discountPrice : item.price;
+              const price = item.discountPrice > 0 ? item.discountPrice : item.price;
+              const { theme, label, accent } = itemStyle(item);
               return (
-                <div key={item._id} className="flex items-center justify-between gap-3 text-xs">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={item.image}
-                      alt=""
-                      className="w-12 h-12 rounded-xl object-cover border border-slate-100 flex-shrink-0"
-                    />
-                    <div>
-                      <p className="font-bold text-slate-800 line-clamp-1">{item.title}</p>
-                      <p className="text-slate-400">Qty: {item.qty} × {formatPrice(currentPrice)}</p>
-                    </div>
+                <li key={item._id} className="flex items-center gap-4">
+                  <ThemedThumb src={item.image} theme={theme} accent={accent} size="w-14 h-14" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{item.title}</p>
+                    <p className="text-xs text-white/50">
+                      <span style={{ color: accent }}>●</span> {label} · Qty {item.qty}
+                    </p>
                   </div>
-                  <span className="font-bold text-slate-900">
-                    {formatPrice(currentPrice * item.qty)}
-                  </span>
-                </div>
+                  <span className="text-sm font-semibold">{formatPrice(price * item.qty)}</span>
+                </li>
               );
             })}
-          </div>
+          </ul>
 
-          <div className="border-t border-slate-100 pt-4 space-y-2.5 text-xs">
-            <div className="flex justify-between text-slate-600">
-              <span>Items Total</span>
-              <span className="font-semibold text-slate-900">{formatPrice(itemsPrice)}</span>
+          <dl className="space-y-3 border-t border-white/10 pt-5 text-sm">
+            <div className="flex justify-between text-white/70">
+              <dt>Subtotal</dt>
+              <dd className="font-medium text-white">{formatPrice(itemsPrice)}</dd>
             </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Tax (5%)</span>
-              <span className="font-semibold text-slate-900">{formatPrice(taxPrice)}</span>
+            <div className="flex justify-between text-white/70">
+              <dt>Tax (5%)</dt>
+              <dd className="font-medium text-white">{formatPrice(taxPrice)}</dd>
             </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Shipping Fee</span>
-              <span className="font-semibold text-slate-900">
-                {shippingPrice === 0 ? <span className="text-emerald-600 font-bold">FREE</span> : formatPrice(shippingPrice)}
-              </span>
+            <div className="flex justify-between text-white/70">
+              <dt>Shipping</dt>
+              <dd className="font-medium text-white">{shippingPrice === 0 ? <span className="text-emerald-400">Free</span> : formatPrice(shippingPrice)}</dd>
             </div>
-            <div className="border-t border-slate-100 pt-3 flex justify-between text-base font-display font-black text-slate-900">
-              <span>Final Total</span>
-              <span className="text-brand-600">{formatPrice(totalPrice)}</span>
+            <div className="flex items-baseline justify-between border-t border-white/10 pt-4">
+              <dt className="text-base font-semibold">Total</dt>
+              <dd className="text-3xl font-semibold tracking-tight">{formatPrice(totalPrice)}</dd>
             </div>
-          </div>
+          </dl>
 
           <button
             type="submit"
             disabled={processing || orderLoading}
-            className="w-full py-4 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-glow flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-white py-4 text-sm font-bold text-slate-950 transition hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {processing || orderLoading ? (
-              <span>Preparing Stripe Checkout...</span>
+              'Preparing secure checkout…'
             ) : (
               <>
-                <Lock className="w-4 h-4" />
-                Pay {formatPrice(totalPrice)} with Stripe
+                <Lock className="h-4 w-4" /> Pay {formatPrice(totalPrice)}
               </>
             )}
           </button>
 
-          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-2 text-[10px] text-slate-500 justify-center">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Escrow protected. Vendors are paid only upon split dispatch.</span>
-          </div>
-        </div>
+          <p className="flex items-center justify-center gap-2 text-[11px] text-white/50">
+            <ShieldCheck className="h-4 w-4 text-emerald-400" /> Escrow protected. Vendors are paid when they ship.
+          </p>
+        </aside>
       </form>
     </div>
   );
