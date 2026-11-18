@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { logout } from '../../redux/slices/authSlice';
 import CurrencySelector from './CurrencySelector';
+import SearchBox from './SearchBox';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -25,19 +26,10 @@ const Navbar = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const wishCount = useSelector((state) => state.wishlist.items.length);
 
-  const [searchKeyword, setSearchKeyword] = useState('');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchKeyword.trim()) {
-      navigate(`/?keyword=${encodeURIComponent(searchKeyword.trim())}`);
-    } else {
-      navigate('/');
-    }
-  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -65,25 +57,7 @@ const Navbar = () => {
           </Link>
 
           {/* Search Bar */}
-          <form
-            onSubmit={handleSearchSubmit}
-            className="hidden md:flex flex-1 max-w-xl relative items-center"
-          >
-            <input
-              type="text"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              placeholder="Search products, brands, stores..."
-              className="w-full bg-slate-100/80 border border-slate-200 rounded-full pl-11 pr-24 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all"
-            />
-            <Search className="w-4 h-4 text-slate-400 absolute left-4 pointer-events-none" />
-            <button
-              type="submit"
-              className="absolute right-1.5 px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-full text-xs font-semibold tracking-wide transition-colors"
-            >
-              Search
-            </button>
-          </form>
+          <SearchBox variant="desktop" />
 
           {/* Actions & User Nav */}
           <div className="flex items-center gap-2.5 sm:gap-3">
@@ -276,17 +250,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile search */}
-      <form onSubmit={handleSearchSubmit} className="md:hidden px-4 pb-3 relative">
-        <Search className="w-4 h-4 text-slate-400 absolute left-8 top-1/2 -translate-y-[calc(50%+6px)] pointer-events-none" />
-        <input
-          type="search"
-          value={searchKeyword}
-          onChange={(e) => setSearchKeyword(e.target.value)}
-          placeholder="Search products, brands, stores..."
-          aria-label="Search products"
-          className="w-full bg-slate-100 border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500"
-        />
-      </form>
+      <SearchBox variant="mobile" />
     </header>
   );
 };
