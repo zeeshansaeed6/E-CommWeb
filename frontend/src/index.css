@@ -16,6 +16,10 @@
 }
 
 @layer utilities {
+  /* Hide the browser's built-in password reveal; the app renders its own toggle */
+  input[type='password']::-ms-reveal,
+  input[type='password']::-ms-clear { display: none; }
+
   /* Line mask used by SplitText reveals */
   .split-line { overflow: hidden; padding-bottom: 0.08em; }
 
