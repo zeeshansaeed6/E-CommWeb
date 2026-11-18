@@ -137,6 +137,77 @@ try {
       price: 39, discountPrice: 0, category: 'Books & Stationery', brand: 'Atelier', stock: 80, rating: 4.7, numReviews: 45,
       images: [img('1544716278-ca5e3f4abd8c')], tags: ['notebook', 'gift'],
     },
+    // ── Batch 2 ──────────────────────────────────────────────
+    {
+      vendor: tech._id,
+      title: 'Pulse S2 Smartwatch',
+      description: 'A bright always-on display, seven-day battery, heart-rate and sleep tracking, and swim-proof to 50 metres. Pairs with any phone.',
+      price: 229, discountPrice: 189, category: 'Electronics', brand: 'Pulse', stock: 40, rating: 4.6, numReviews: 58, isFeatured: true,
+      images: [img('1546868871-7041f2a55e12')], tags: ['wearable', 'fitness'],
+    },
+    {
+      vendor: tech._id,
+      title: 'StudioLine Wired Headphones',
+      description: 'Tuned for accurate studio sound with plush memory-foam ear cushions and a detachable cable. Folds flat for the bag.',
+      price: 99, discountPrice: 0, category: 'Electronics', brand: 'StudioLine', stock: 65, rating: 4.4, numReviews: 31,
+      images: [img('1584917865442-de89df76afd3')], tags: ['audio', 'studio'],
+    },
+    {
+      vendor: urban._id,
+      title: 'Everyday Heavyweight Hoodie',
+      description: 'A 450 gsm brushed-fleece hoodie with a roomy hood and ribbed cuffs. Soft inside, sturdy outside, built to be worn on repeat.',
+      price: 79, discountPrice: 64, category: 'Fashion & Apparel', brand: 'Common Thread', stock: 90, rating: 4.7, numReviews: 112, isFeatured: true,
+      images: [img('1556821840-3a63f95609a7')], tags: ['hoodie', 'streetwear'],
+    },
+    {
+      vendor: urban._id,
+      title: 'Aero Bomber Jacket',
+      description: 'A lightweight satin-finish bomber with a ribbed collar and hem, two zip pockets and a quilted lining for early-spring evenings.',
+      price: 139, discountPrice: 0, category: 'Fashion & Apparel', brand: 'Aero', stock: 28, rating: 4.5, numReviews: 47,
+      images: [img('1591047139829-d91aecb6caea')], tags: ['jacket', 'outerwear'],
+    },
+    {
+      vendor: urban._id,
+      title: 'Retro Graphic Tee',
+      description: 'A midweight cotton tee with a bold screen-printed graphic that stays sharp wash after wash. Relaxed, easy fit.',
+      price: 35, discountPrice: 0, category: 'Fashion & Apparel', brand: 'Common Thread', stock: 120, rating: 4.3, numReviews: 64,
+      images: [img('1583394838336-acd977736f90')], tags: ['tee', 'graphic'],
+    },
+    {
+      vendor: urban._id,
+      title: 'Sunrise Jogger Set',
+      description: 'A matching cropped hoodie and relaxed joggers in a sunny colourway. Cosy french-terry cotton with an elastic drawcord waist.',
+      price: 109, discountPrice: 89, category: 'Fashion & Apparel', brand: 'Sunrise', stock: 36, rating: 4.6, numReviews: 39,
+      images: [img('1515886657613-9f3515b0c78f')], tags: ['loungewear', 'set'],
+    },
+    {
+      vendor: urban._id,
+      title: 'Studio Glow Makeup Set',
+      description: 'Everything for a polished everyday look: powder brushes, a bronzer compact, a creamy lipstick and a volumising mascara.',
+      price: 74, discountPrice: 59, category: 'Beauty & Health', brand: 'Studio Glow', stock: 55, rating: 4.5, numReviews: 83,
+      images: [img('1596462502278-27bfdc403348')], tags: ['makeup', 'gift'],
+    },
+    {
+      vendor: urban._id,
+      title: 'FlexFit Performance Leggings',
+      description: 'High-rise, four-way stretch leggings with a squat-proof, sweat-wicking fabric and a hidden waistband pocket.',
+      price: 59, discountPrice: 0, category: 'Sports & Outdoors', brand: 'FlexFit', stock: 75, rating: 4.7, numReviews: 141, isFeatured: true,
+      images: [img('1571019613454-1cb2f99b2d8b')], tags: ['workout', 'activewear'],
+    },
+    {
+      vendor: urban._id,
+      title: 'Enamel Cast Iron Dutch Oven',
+      description: 'A 5-litre enamelled cast-iron pot that locks in moisture and heat evenly. Oven-safe, hob-safe and handsome enough to serve from.',
+      price: 149, discountPrice: 119, category: 'Home & Kitchen', brand: 'Hearth', stock: 22, rating: 4.9, numReviews: 96,
+      images: [img('1556909114-f6e7ad7d3136')], tags: ['cookware', 'kitchen'],
+    },
+    {
+      vendor: urban._id,
+      title: 'Ceramic Latte Cup Set',
+      description: 'Four hand-glazed stoneware cups with a comfortable thumb-rest handle. Microwave and dishwasher safe.',
+      price: 45, discountPrice: 0, category: 'Home & Kitchen', brand: 'Hearth', stock: 60, rating: 4.6, numReviews: 52,
+      images: [img('1495474472287-4d71bcdd2085')], tags: ['coffee', 'tableware'],
+    },
   ];
 
   let added = 0;
