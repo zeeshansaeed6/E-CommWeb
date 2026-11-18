@@ -65,6 +65,8 @@ const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All');
   const [selectedSort, setSelectedSort] = useState(searchParams.get('sort') || 'newest');
   const [priceBand, setPriceBand] = useState('any');
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [topRated, setTopRated] = useState(false);
 
   const { products, featuredProducts, loading, error, totalProducts } = useSelector(
     (state) => state.products
@@ -92,6 +94,8 @@ const HomePage = () => {
     setSelectedSort(e.target.value);
     updateParam('sort', e.target.value);
   };
+
+  const visibleProducts = products.filter((p) => (!inStockOnly || p.stock > 0) && (!topRated || p.rating >= 4));
 
   const showLanding = !keyword && selectedCategory === 'All';
   const hero = featuredProducts?.slice(0, 3) || [];
@@ -313,6 +317,22 @@ const HomePage = () => {
                 </button>
               );
             })}
+            <span className="mx-1 h-5 w-px flex-shrink-0 bg-slate-200" aria-hidden="true" />
+            {[
+              ['In stock', inStockOnly, () => setInStockOnly((v) => !v)],
+              ['4★ & up', topRated, () => setTopRated((v) => !v)],
+            ].map(([label, on, toggle]) => (
+              <button
+                key={label}
+                onClick={toggle}
+                aria-pressed={on}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
+                  on ? 'bg-slate-900 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           {keyword && (
@@ -339,7 +359,7 @@ const HomePage = () => {
           </div>
         ) : error ? (
           <Alert type="error" message={error} />
-        ) : products.length === 0 ? (
+        ) : visibleProducts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300 p-8">
             <Store className="w-12 h-12 text-slate-300 mx-auto mb-3" />
             <h3 className="text-lg font-bold text-slate-800">No products found</h3>
@@ -347,7 +367,7 @@ const HomePage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product, i) => (
+            {visibleProducts.map((product, i) => (
               <Reveal key={product._id} delay={(i % 4) * 70}>
                 <ProductCard product={product} />
               </Reveal>
