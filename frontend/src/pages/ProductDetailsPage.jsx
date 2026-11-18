@@ -17,14 +17,13 @@ import {
   resetProductDetails,
 } from '../redux/slices/productSlice';
 import { addToCart } from '../redux/slices/cartSlice';
-import ImageGallery from '../components/product/ImageGallery';
 import LuxuryProductPage from '../components/product/LuxuryProductPage';
 import EditorialProductPage from '../components/product/themes/EditorialProductPage';
 import EnergyProductPage from '../components/product/themes/EnergyProductPage';
 import SoftProductPage from '../components/product/themes/SoftProductPage';
 import CozyProductPage from '../components/product/themes/CozyProductPage';
 import { themeFor } from '../components/product/themes/productTheme';
-import ProductShowcase, { ProductLocalNav } from '../components/product/ProductShowcase';
+import TechProductPage from '../components/product/themes/TechProductPage';
 import Rating from '../components/common/Rating';
 import Loader from '../components/common/Loader';
 import Alert from '../components/common/Alert';
@@ -40,6 +39,7 @@ const THEME_PAGES = {
   energy: EnergyProductPage,
   soft: SoftProductPage,
   cozy: CozyProductPage,
+  tech: TechProductPage,
 };
 
 const ProductDetailsPage = () => {
@@ -124,142 +124,10 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="space-y-12">
-      {THEME_PAGES[themeFor(product)] ? (
-        (() => {
-          const ThemePage = THEME_PAGES[themeFor(product)];
-          return <ThemePage product={product} onAdd={(n) => handleAddToCart(n)} />;
-        })()
-      ) : (
-        <>
-      <ProductLocalNav product={product} />
-      <ProductShowcase product={product} />
-
-      <h2 className="text-4xl sm:text-5xl font-sans font-semibold tracking-[-0.04em] text-[#1d1d1f] pt-8">
-        Buy {product.title}.
-      </h2>
-
-      {/* Product Primary Section */}
-      <div id="buy" className="scroll-mt-28 grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white rounded-[2rem] p-6 sm:p-10 border border-[#d2d2d7]/60">
-        {/* Images Column */}
-        <div className="lg:col-span-6">
-          <ImageGallery images={product.images} title={product.title} />
-        </div>
-
-        {/* Product Details & Actions Column */}
-        <div className="lg:col-span-6 flex flex-col justify-between space-y-6">
-          <div className="space-y-4">
-            {/* Vendor Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-purple-50 border border-purple-200/70 text-purple-700 text-xs font-bold">
-              <Store className="w-3.5 h-3.5" />
-              <span>
-                Sold by {product.vendor?.vendorDetails?.storeName || product.vendor?.name || 'Verified Vendor'}
-              </span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-slate-900 leading-tight">
-              {product.title}
-            </h1>
-
-            {/* Ratings & Reviews */}
-            <div className="flex items-center gap-4">
-              <Rating value={product.rating} text={`${product.numReviews} verified reviews`} />
-              <span className="text-slate-300">|</span>
-              <span className="text-xs font-semibold text-slate-500">
-                Brand: <strong className="text-slate-800">{product.brand}</strong>
-              </span>
-            </div>
-
-            {/* Price section */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-baseline gap-3">
-              <span className="text-3xl font-display font-black text-slate-900">
-                {formatPrice(currentPrice)}
-              </span>
-              {product.discountPrice > 0 && (
-                <>
-                  <span className="text-base text-slate-400 line-through font-medium">
-                    {formatPrice(product.price)}
-                  </span>
-                  <span className="text-xs font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded-md">
-                    Save {formatPrice(product.price - product.discountPrice)}
-                  </span>
-                </>
-              )}
-            </div>
-
-            <p className="text-sm text-slate-600 leading-relaxed">{product.description}</p>
-          </div>
-
-          {/* Stock & Add to Cart Controls */}
-          <div className="space-y-4 pt-6 border-t border-slate-100">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-700">Availability:</span>
-              <span
-                className={`text-xs font-extrabold px-2.5 py-1 rounded-full ${
-                  product.stock > 0
-                    ? 'bg-emerald-100 text-emerald-800'
-                    : 'bg-rose-100 text-rose-800'
-                }`}
-              >
-                {product.stock > 0 ? `In Stock (${product.stock} units)` : 'Out of Stock'}
-              </span>
-            </div>
-
-            {product.stock > 0 && (
-              <div className="flex items-center gap-4">
-                <div className="flex items-center border border-slate-200 rounded-2xl bg-slate-50 p-1">
-                  <button
-                    onClick={() => setQty((prev) => Math.max(1, prev - 1))}
-                    className="w-9 h-9 flex items-center justify-center font-bold text-slate-600 hover:bg-white rounded-xl transition-colors"
-                  >
-                    -
-                  </button>
-                  <span className="w-12 text-center text-sm font-bold text-slate-800">{qty}</span>
-                  <button
-                    onClick={() => setQty((prev) => Math.min(product.stock, prev + 1))}
-                    className="w-9 h-9 flex items-center justify-center font-bold text-slate-600 hover:bg-white rounded-xl transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-
-                <button
-                  onClick={() => handleAddToCart()}
-                  className="flex-1 py-3.5 px-6 rounded-2xl bg-[#0071e3] hover:bg-[#0077ed] text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all"
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  Add to Cart • {formatPrice(currentPrice * qty)}
-                </button>
-              </div>
-            )}
-
-            {addedAlert && (
-              <Alert
-                type="success"
-                message={`Added ${qty} item(s) to your cart!`}
-                onClose={() => setAddedAlert(false)}
-              />
-            )}
-
-            {/* Trust Badges */}
-            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-slate-100 text-[11px] text-slate-500 font-medium text-center">
-              <div className="flex flex-col items-center gap-1 p-2 rounded-xl bg-slate-50">
-                <Truck className="w-4 h-4 text-brand-600" />
-                <span>Split Delivery</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 p-2 rounded-xl bg-slate-50">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Direct Escrow</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 p-2 rounded-xl bg-slate-50">
-                <RotateCcw className="w-4 h-4 text-indigo-600" />
-                <span>30-Day Returns</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-        </>
-      )}
+      {(() => {
+        const ThemePage = THEME_PAGES[themeFor(product)] || TechProductPage;
+        return <ThemePage product={product} onAdd={(n) => handleAddToCart(n)} />;
+      })()}
 
       {/* Vendor Profile Spotlight Card */}
       {product.vendor && (
