@@ -129,6 +129,8 @@ export const createProduct = async (req, res, next) => {
       images,
       tags,
       isFeatured,
+      theme,
+      specs,
     } = req.body;
 
     if (!title || !description || price === undefined || !category) {
@@ -152,6 +154,8 @@ export const createProduct = async (req, res, next) => {
       images: defaultImages,
       tags: Array.isArray(tags) ? tags : [],
       isFeatured: Boolean(isFeatured),
+      ...(theme ? { theme } : {}),
+      ...(Array.isArray(specs) ? { specs } : {}),
     });
 
     res.status(201).json({
@@ -185,11 +189,20 @@ export const updateProduct = async (req, res, next) => {
       throw new Error('Not authorized to update this product. You do not own it.');
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true, runValidators: true }
-    ).populate('vendor', 'name vendorDetails');
+    // Only listing fields are editable: ownership, ratings, reviews etc. must never come from the client.
+    const EDITABLE = ['title', 'description', 'price', 'discountPrice', 'category', 'brand', 'stock', 'images', 'tags', 'isActive', 'theme', 'specs'];
+    const NUMERIC = ['price', 'discountPrice', 'stock'];
+    EDITABLE.forEach((key) => {
+      if (req.body[key] === undefined) return;
+      product[key] = NUMERIC.includes(key) ? Number(req.body[key]) || 0 : req.body[key];
+    });
+    if (isAdmin && req.body.isFeatured !== undefined) {
+      product.isFeatured = Boolean(req.body.isFeatured);
+    }
+
+    // save() runs document validators, so the discount check compares against the real price
+    await product.save();
+    const updatedProduct = await product.populate('vendor', 'name vendorDetails');
 
     res.json({
       success: true,

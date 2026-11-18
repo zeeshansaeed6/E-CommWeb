@@ -175,6 +175,7 @@ export const getVendorOrders = async (req, res, next) => {
     // Find all orders that contain at least one item from this vendor
     const orders = await Order.find({ 'orderItems.vendor': vendorId })
       .populate('customer', 'name email phone address')
+      .populate('orderItems.product', 'category theme')
       .sort({ createdAt: -1 });
 
     // Format orders for vendor view: isolate vendor's items & vendor payout summary
