@@ -68,6 +68,12 @@ const HomePage = () => {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [topRated, setTopRated] = useState(false);
 
+  // Keep the filters in step with the URL, e.g. when a footer link changes ?category= while on this page
+  useEffect(() => {
+    setSelectedCategory(searchParams.get('category') || 'All');
+    setSelectedSort(searchParams.get('sort') || 'newest');
+  }, [searchParams]);
+
   const { products, featuredProducts, loading, error, totalProducts } = useSelector(
     (state) => state.products
   );
