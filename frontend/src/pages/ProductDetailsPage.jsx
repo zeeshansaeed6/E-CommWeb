@@ -22,6 +22,7 @@ import LuxuryProductPage from '../components/product/LuxuryProductPage';
 import EditorialProductPage from '../components/product/themes/EditorialProductPage';
 import EnergyProductPage from '../components/product/themes/EnergyProductPage';
 import SoftProductPage from '../components/product/themes/SoftProductPage';
+import CozyProductPage from '../components/product/themes/CozyProductPage';
 import { themeFor } from '../components/product/themes/productTheme';
 import ProductShowcase, { ProductLocalNav } from '../components/product/ProductShowcase';
 import Rating from '../components/common/Rating';
@@ -37,6 +38,7 @@ const THEME_PAGES = {
   editorial: EditorialProductPage,
   energy: EnergyProductPage,
   soft: SoftProductPage,
+  cozy: CozyProductPage,
 };
 
 const ProductDetailsPage = () => {
