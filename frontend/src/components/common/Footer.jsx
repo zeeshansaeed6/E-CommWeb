@@ -1,114 +1,115 @@
 import React from 'react';
-import { ShoppingBag, Shield, Truck, RefreshCw, CreditCard, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { ArrowUp, CreditCard, RefreshCw, Shield, ShoppingBag, Truck } from 'lucide-react';
 
-const Footer = () => {
-  return (
-    <footer className="bg-surface-900 text-slate-300 pt-16 pb-12 border-t border-slate-800 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Value Prop Badges */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-slate-800">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-brand-900/50 border border-brand-500/30 flex items-center justify-center text-brand-400 flex-shrink-0">
-              <Truck className="w-6 h-6" />
-            </div>
+// One link per page style, so the footer doubles as a tour of the six themes
+const STYLES = [
+  ['Tech', 'Electronics', '#0071e3'],
+  ['Editorial', 'Fashion & Apparel', '#f97316'],
+  ['Energy', 'Sports & Outdoors', '#00e5ff'],
+  ['Soft', 'Beauty & Health', '#e8a0b4'],
+  ['Cozy', 'Home & Kitchen', '#c1583a'],
+  ['Luxury', 'Watches & Jewelry', '#c9b27c'],
+];
+
+const PROMISES = [
+  [Truck, 'Split shipping', 'Each vendor ships directly to you', '#0071e3'],
+  [Shield, 'Buyer protection', 'Payments held in escrow until delivery', '#10b981'],
+  [CreditCard, 'Secure checkout', 'Encrypted payments with Stripe', '#f97316'],
+  [RefreshCw, 'Easy returns', '30 days on every order', '#e8a0b4'],
+];
+
+const LINK = 'text-white/60 transition-colors hover:text-white';
+
+const Footer = () => (
+  <footer className="mt-24 bg-slate-950 text-white">
+    {/* Theme colour strip */}
+    <div className="flex h-1" aria-hidden="true">
+      {STYLES.map(([name, , color]) => (
+        <span key={name} className="flex-1" style={{ backgroundColor: color }} />
+      ))}
+    </div>
+
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Promises */}
+      <ul className="grid grid-cols-1 gap-8 border-b border-white/10 py-14 sm:grid-cols-2 lg:grid-cols-4">
+        {PROMISES.map(([Icon, title, text, color]) => (
+          <li key={title} className="flex items-start gap-4">
+            <span className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-2xl" style={{ backgroundColor: `${color}26`, color }}>
+              <Icon className="h-5 w-5" />
+            </span>
             <div>
-              <h4 className="font-semibold text-white text-sm">Split Fast Shipping</h4>
-              <p className="text-xs text-slate-400">Direct fulfillment from verified vendors</p>
+              <h4 className="text-sm font-semibold">{title}</h4>
+              <p className="mt-0.5 text-sm text-white/50">{text}</p>
             </div>
-          </div>
+          </li>
+        ))}
+      </ul>
 
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-900/50 border border-emerald-500/30 flex items-center justify-center text-emerald-400 flex-shrink-0">
-              <Shield className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-white text-sm">Buyer Protection</h4>
-              <p className="text-xs text-slate-400">Money back guarantee & escrow payouts</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-900/50 border border-indigo-500/30 flex items-center justify-center text-indigo-400 flex-shrink-0">
-              <CreditCard className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-white text-sm">Stripe 3D-Secure</h4>
-              <p className="text-xs text-slate-400">256-bit encrypted checkout sessions</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-purple-900/50 border border-purple-500/30 flex items-center justify-center text-purple-400 flex-shrink-0">
-              <RefreshCw className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-white text-sm">Multi-Vendor Mesh</h4>
-              <p className="text-xs text-slate-400">Independent store profiles & live inventory</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Footer Links */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 py-12">
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white">
-                <ShoppingBag className="w-5 h-5" />
-              </div>
-              <span className="text-xl font-display font-bold text-white">
-                Omni<span className="text-brand-400">Market</span>
-              </span>
-            </div>
-            <p className="text-slate-400 text-sm max-w-sm mb-6 leading-relaxed">
-              Enterprise multi-vendor e-commerce platform engineered with React, Redux Toolkit, Node.js, Mongoose, and Stripe webhook infrastructure.
-            </p>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span>Engineered with precision for commercial scalability</span>
-            </div>
-          </div>
-
-          <div>
-            <h5 className="text-white font-semibold text-sm mb-4">Explore Marketplace</h5>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link to="/?category=Electronics" className="hover:text-brand-400 transition-colors">Electronics & Tech</Link></li>
-              <li><Link to="/?category=Fashion%20%26%20Apparel" className="hover:text-brand-400 transition-colors">Fashion & Apparel</Link></li>
-              <li><Link to="/?category=Home%20%26%20Kitchen" className="hover:text-brand-400 transition-colors">Home & Living</Link></li>
-              <li><Link to="/?sort=rating" className="hover:text-brand-400 transition-colors">Top Rated Gear</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="text-white font-semibold text-sm mb-4">Vendor Ecosystem</h5>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><Link to="/register" className="hover:text-brand-400 transition-colors">Become a Vendor</Link></li>
-              <li><Link to="/vendor/dashboard" className="hover:text-brand-400 transition-colors">Vendor Portal</Link></li>
-              <li><span className="text-slate-400">Automated Split Payouts</span></li>
-              <li><span className="text-slate-400">10% Platform Fee Policy</span></li>
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="text-white font-semibold text-sm mb-4">Architecture</h5>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li><span className="text-slate-400 font-mono text-xs">MERN Stack + ES6 Modules</span></li>
-              <li><span className="text-slate-400 font-mono text-xs">HTTP-Only JWT Cookies</span></li>
-              <li><span className="text-slate-400 font-mono text-xs">Stripe Webhooks (Raw Body)</span></li>
-              <li><span className="text-slate-400 font-mono text-xs">Redux Toolkit State</span></li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-          <p>© {new Date().getFullYear()} OmniMarket Multi-Vendor Platform. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Built with modern web standards & secure Stripe architecture
+      {/* Links */}
+      <div className="grid grid-cols-2 gap-10 py-14 md:grid-cols-5">
+        <div className="col-span-2">
+          <Link to="/" className="inline-flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-purple-600">
+              <ShoppingBag className="h-5 w-5" />
+            </span>
+            <span className="text-xl font-display font-bold tracking-tight">
+              Omni<span className="text-brand-400">Market</span>
+            </span>
+          </Link>
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/50">
+            A multi-vendor marketplace where every product gets a page that fits it, from cinematic tech to quiet luxury.
           </p>
         </div>
+
+        <nav aria-label="Shop by style">
+          <h5 className="mb-4 text-sm font-semibold">Shop by style</h5>
+          <ul className="space-y-2.5 text-sm">
+            {STYLES.map(([name, category, color]) => (
+              <li key={name}>
+                <Link to={`/?category=${encodeURIComponent(category)}`} className={`${LINK} inline-flex items-center gap-2`}>
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }} aria-hidden="true" />
+                  {name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav aria-label="Your account">
+          <h5 className="mb-4 text-sm font-semibold">Your account</h5>
+          <ul className="space-y-2.5 text-sm">
+            <li><Link to="/orders" className={LINK}>Orders</Link></li>
+            <li><Link to="/wishlist" className={LINK}>Wishlist</Link></li>
+            <li><Link to="/cart" className={LINK}>Bag</Link></li>
+            <li><Link to="/login" className={LINK}>Sign in</Link></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Sell with us">
+          <h5 className="mb-4 text-sm font-semibold">Sell with us</h5>
+          <ul className="space-y-2.5 text-sm">
+            <li><Link to="/register" className={LINK}>Become a vendor</Link></li>
+            <li><Link to="/vendor/dashboard" className={LINK}>Vendor hub</Link></li>
+            <li className="text-white/40">Automatic split payouts</li>
+            <li className="text-white/40">10% platform fee</li>
+          </ul>
+        </nav>
       </div>
-    </footer>
-  );
-};
+
+      {/* Bottom bar */}
+      <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 py-8 text-xs text-white/40 sm:flex-row">
+        <p>© {new Date().getFullYear()} OmniMarket. All rights reserved.</p>
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-white/70 ring-1 ring-white/15 transition hover:bg-white/10 hover:text-white"
+        >
+          Back to top <ArrowUp className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    </div>
+  </footer>
+);
 
 export default Footer;
