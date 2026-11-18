@@ -18,10 +18,14 @@ import {
 } from '../redux/slices/productSlice';
 import { addToCart } from '../redux/slices/cartSlice';
 import ImageGallery from '../components/product/ImageGallery';
+import LuxuryProductPage from '../components/product/LuxuryProductPage';
+import ProductShowcase, { ProductLocalNav } from '../components/product/ProductShowcase';
 import Rating from '../components/common/Rating';
 import Loader from '../components/common/Loader';
 import Alert from '../components/common/Alert';
 import useCurrency from '../hooks/useCurrency';
+import RecentlyViewed from '../components/product/RecentlyViewed';
+import { recordRecentlyViewed } from '../hooks/useRecentlyViewed';
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -47,7 +51,11 @@ const ProductDetailsPage = () => {
     };
   }, [dispatch, id, reviewSuccess]);
 
-  const handleAddToCart = () => {
+  useEffect(() => {
+    if (product?._id === id) recordRecentlyViewed(product);
+  }, [product, id]);
+
+  const handleAddToCart = (forcedQty) => {
     if (!product) return;
     const currentPrice = product.discountPrice > 0 ? product.discountPrice : product.price;
 
@@ -60,7 +68,7 @@ const ProductDetailsPage = () => {
         image: product.images?.[0]?.url || '',
         stock: product.stock,
         vendor: product.vendor?._id || product.vendor,
-        qty: Number(qty),
+        qty: Number(typeof forcedQty === 'number' ? forcedQty : qty),
       })
     );
 
@@ -97,18 +105,22 @@ const ProductDetailsPage = () => {
     'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80';
 
   return (
-    <div className="space-y-12 max-w-7xl mx-auto">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link to="/" className="hover:text-brand-600">Home</Link>
-        <span>/</span>
-        <Link to={`/?category=${product.category}`} className="hover:text-brand-600">{product.category}</Link>
-        <span>/</span>
-        <span className="text-slate-900 truncate max-w-xs">{product.title}</span>
-      </nav>
+    <div className="space-y-12">
+      {product.theme === 'luxury' ? (
+        <>
+          <LuxuryProductPage product={product} onAdd={(n) => handleAddToCart(n)} />
+        </>
+      ) : (
+        <>
+      <ProductLocalNav product={product} />
+      <ProductShowcase product={product} />
+
+      <h2 className="text-4xl sm:text-5xl font-sans font-semibold tracking-[-0.04em] text-[#1d1d1f] pt-8">
+        Buy {product.title}.
+      </h2>
 
       {/* Product Primary Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-sm">
+      <div id="buy" className="scroll-mt-28 grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white rounded-[2rem] p-6 sm:p-10 border border-[#d2d2d7]/60">
         {/* Images Column */}
         <div className="lg:col-span-6">
           <ImageGallery images={product.images} title={product.title} />
@@ -192,11 +204,11 @@ const ProductDetailsPage = () => {
                 </div>
 
                 <button
-                  onClick={handleAddToCart}
-                  className="flex-1 py-3.5 px-6 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-glow flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all"
+                  onClick={() => handleAddToCart()}
+                  className="flex-1 py-3.5 px-6 rounded-2xl bg-[#0071e3] hover:bg-[#0077ed] text-white font-semibold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all"
                 >
                   <ShoppingCart className="w-5 h-5" />
-                  Add to Cart • ${(currentPrice * qty).toFixed(2)}
+                  Add to Cart • {formatPrice(currentPrice * qty)}
                 </button>
               </div>
             )}
@@ -227,6 +239,8 @@ const ProductDetailsPage = () => {
           </div>
         </div>
       </div>
+        </>
+      )}
 
       {/* Vendor Profile Spotlight Card */}
       {product.vendor && (
@@ -266,7 +280,7 @@ const ProductDetailsPage = () => {
       )}
 
       {/* Customer Reviews Section */}
-      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-sm space-y-8">
+      <div className="bg-white rounded-[2rem] p-6 sm:p-10 border border-[#d2d2d7]/60 space-y-8">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
             <h2 className="text-xl font-display font-bold text-slate-900">
@@ -343,6 +357,8 @@ const ProductDetailsPage = () => {
           )}
         </div>
       </div>
+
+      <RecentlyViewed excludeId={product._id} />
     </div>
   );
 };

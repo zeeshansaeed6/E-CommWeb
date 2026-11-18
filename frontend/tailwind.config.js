@@ -30,6 +30,20 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['Outfit', 'Inter', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+      },
+      keyframes: {
+        'fade-up': { '0%': { opacity: 0, transform: 'translateY(24px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+        float: { '0%,100%': { transform: 'translateY(0) rotate(var(--r,0deg))' }, '50%': { transform: 'translateY(-14px) rotate(var(--r,0deg))' } },
+        aurora: { '0%,100%': { transform: 'translate(0,0) scale(1)' }, '50%': { transform: 'translate(40px,-30px) scale(1.15)' } },
+        shimmer: { '100%': { transform: 'translateX(100%)' } },
+        marquee: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
+      },
+      animation: {
+        'fade-up': 'fade-up .7s cubic-bezier(.16,1,.3,1) both',
+        float: 'float 6s ease-in-out infinite',
+        aurora: 'aurora 14s ease-in-out infinite',
+        marquee: 'marquee 30s linear infinite',
       },
       boxShadow: {
         glow: '0 0 25px -5px rgba(124, 58, 237, 0.4)',

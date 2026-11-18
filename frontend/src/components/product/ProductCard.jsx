@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { ShoppingCart, Store, Check } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ShoppingCart, Store, Check, Heart } from 'lucide-react';
 import Rating from '../common/Rating';
 import { addToCart } from '../../redux/slices/cartSlice';
+import { toggleWishlist } from '../../redux/slices/wishlistSlice';
 import useCurrency from '../../hooks/useCurrency';
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const { formatPrice } = useCurrency();
   const [added, setAdded] = React.useState(false);
+  const wished = useSelector((state) => state.wishlist.items.some((x) => x._id === product._id));
 
   const mainImage =
     product.images?.[0]?.url ||
@@ -44,7 +46,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group relative bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-card hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+    <div className="group relative h-full bg-white rounded-3xl border border-slate-200/70 shadow-sm hover:shadow-2xl hover:shadow-brand-900/10 hover:border-brand-200 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden">
       <div>
         {/* Image Container with Badges */}
         <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
@@ -52,7 +54,7 @@ const ProductCard = ({ product }) => {
             <img
               src={mainImage}
               alt={product.title}
-              className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+              className="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
             />
           </Link>
 
@@ -62,6 +64,19 @@ const ProductCard = ({ product }) => {
               -{discountPercent}% OFF
             </span>
           )}
+
+          {/* Wishlist heart */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch(toggleWishlist(product));
+            }}
+            aria-pressed={wished}
+            aria-label={wished ? 'Remove from wishlist' : 'Save to wishlist'}
+            className="absolute bottom-3 right-3 p-2 rounded-full bg-white/90 backdrop-blur-md shadow-md hover:scale-110 active:scale-90 transition-transform"
+          >
+            <Heart className={`w-4 h-4 transition-colors ${wished ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}`} />
+          </button>
 
           {/* Category Chip */}
           <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-slate-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-slate-200/60 shadow-sm">
@@ -106,8 +121,8 @@ const ProductCard = ({ product }) => {
               </span>
             )}
           </div>
-          <span className="text-[10px] text-emerald-600 font-bold block">
-            {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
+          <span className={`text-[10px] font-bold block ${product.stock === 0 ? 'text-rose-600' : product.stock <= 5 ? 'text-amber-600' : 'text-emerald-600'}`}>
+            {product.stock === 0 ? 'Out of Stock' : product.stock <= 5 ? `Only ${product.stock} left` : 'In Stock'}
           </span>
         </div>
 
@@ -121,7 +136,7 @@ const ProductCard = ({ product }) => {
               ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
               : 'bg-brand-600 hover:bg-brand-700 text-white shadow-sm hover:shadow-glow active:scale-95'
           }`}
-          title="Add to Cart"
+          title="Add to Cart" aria-label={`Add ${product.title} to cart`}
         >
           {added ? <Check className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
         </button>

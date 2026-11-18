@@ -13,6 +13,7 @@ import {
   Package,
   CreditCard,
   DollarSign,
+  Heart,
 } from 'lucide-react';
 import { logout } from '../../redux/slices/authSlice';
 import CurrencySelector from './CurrencySelector';
@@ -22,6 +23,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
+  const wishCount = useSelector((state) => state.wishlist.items.length);
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -44,7 +46,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/70 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           {/* Logo */}
@@ -109,6 +111,20 @@ const Navbar = () => {
                 Admin Panel
               </Link>
             )}
+
+            {/* Wishlist */}
+            <Link
+              to="/wishlist"
+              aria-label={`Wishlist (${wishCount})`}
+              className="relative p-2.5 text-slate-700 hover:text-rose-500 rounded-xl hover:bg-slate-100 transition-colors hidden sm:flex items-center"
+            >
+              <Heart className="w-6 h-6" />
+              {wishCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md">
+                  {wishCount}
+                </span>
+              )}
+            </Link>
 
             {/* Cart Icon */}
             <Link
@@ -258,6 +274,19 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile search */}
+      <form onSubmit={handleSearchSubmit} className="md:hidden px-4 pb-3 relative">
+        <Search className="w-4 h-4 text-slate-400 absolute left-8 top-1/2 -translate-y-[calc(50%+6px)] pointer-events-none" />
+        <input
+          type="search"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          placeholder="Search products, brands, stores..."
+          aria-label="Search products"
+          className="w-full bg-slate-100 border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500"
+        />
+      </form>
     </header>
   );
 };
