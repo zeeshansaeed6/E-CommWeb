@@ -20,6 +20,7 @@ import { addToCart } from '../redux/slices/cartSlice';
 import ImageGallery from '../components/product/ImageGallery';
 import LuxuryProductPage from '../components/product/LuxuryProductPage';
 import EditorialProductPage from '../components/product/themes/EditorialProductPage';
+import EnergyProductPage from '../components/product/themes/EnergyProductPage';
 import { themeFor } from '../components/product/themes/productTheme';
 import ProductShowcase, { ProductLocalNav } from '../components/product/ProductShowcase';
 import Rating from '../components/common/Rating';
@@ -33,6 +34,7 @@ import { recordRecentlyViewed } from '../hooks/useRecentlyViewed';
 const THEME_PAGES = {
   luxury: LuxuryProductPage,
   editorial: EditorialProductPage,
+  energy: EnergyProductPage,
 };
 
 const ProductDetailsPage = () => {
