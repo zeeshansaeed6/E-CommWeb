@@ -76,6 +76,7 @@ const productSchema = new mongoose.Schema(
         'Beauty & Health',
         'Sports & Outdoors',
         'Books & Stationery',
+        'Watches & Jewelry',
         'Toys & Games',
         'Automotive',
         'Other',
@@ -112,6 +113,20 @@ const productSchema = new mongoose.Schema(
       default: true,
     },
     tags: [String],
+    // 'luxury' switches the storefront to the editorial watch-style product page
+    theme: {
+      type: String,
+      enum: ['standard', 'luxury'],
+      default: 'standard',
+    },
+    // Optional grouped spec sheet, e.g. { group: 'Case', label: 'Diameter', value: '42 mm' }
+    specs: [
+      {
+        group: { type: String, default: 'Details' },
+        label: { type: String, required: true },
+        value: { type: String, required: true },
+      },
+    ],
   },
   {
     timestamps: true,
