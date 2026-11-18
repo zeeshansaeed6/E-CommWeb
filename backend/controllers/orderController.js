@@ -117,6 +117,7 @@ export const getOrderById = async (req, res, next) => {
     const order = await Order.findById(req.params.id)
       .populate('customer', 'name email phone avatar')
       .populate('orderItems.vendor', 'name email vendorDetails avatar')
+      .populate('orderItems.product', 'category theme')
       .populate('vendorPayouts.vendor', 'name email vendorDetails');
 
     if (!order) {
@@ -152,6 +153,7 @@ export const getMyOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({ customer: req.user._id })
       .populate('orderItems.vendor', 'name vendorDetails')
+      .populate('orderItems.product', 'category theme')
       .sort({ createdAt: -1 });
 
     res.json({
