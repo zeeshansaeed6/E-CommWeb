@@ -79,12 +79,12 @@ const CurrencySelector = ({ className = '' }) => {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`Currency: ${currencyInfo.name}. Change currency`}
-        className="inline-flex items-center gap-2 rounded-full bg-white py-1.5 pl-1.5 pr-3 text-xs font-semibold text-slate-800 ring-1 ring-slate-200 transition hover:bg-slate-50 active:scale-95"
+        className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-white py-1.5 pl-1.5 pr-2.5 sm:pr-3 text-xs font-semibold text-slate-800 ring-1 ring-slate-200 transition hover:bg-slate-50 active:scale-95"
       >
         <span className="grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-[11px] font-bold text-white" aria-hidden="true">
           {currencyInfo.symbol.trim().slice(0, 3)}
         </span>
-        {currencyInfo.code}
+        <span className="hidden sm:inline">{currencyInfo.code}</span>
         <ChevronDown className={`h-3.5 w-3.5 text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
 

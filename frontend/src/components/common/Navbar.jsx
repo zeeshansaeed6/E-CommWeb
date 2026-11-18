@@ -40,17 +40,17 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/70 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-4">
+        <div className="flex items-center justify-between h-20 gap-2 sm:gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-glow group-hover:scale-105 transition-transform duration-300">
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group flex-shrink-0">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-glow group-hover:scale-105 transition-transform duration-300">
               <ShoppingBag className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-2xl font-display font-black tracking-tight text-slate-900">
+              <span className="text-xl sm:text-2xl font-display font-black tracking-tight text-slate-900">
                 Omni<span className="gradient-text">Market</span>
               </span>
-              <span className="block text-[10px] font-semibold uppercase tracking-widest text-slate-600">
+              <span className="hidden sm:block text-[10px] font-semibold uppercase tracking-widest text-slate-600">
                 Multi-Vendor Platform
               </span>
             </div>
@@ -60,7 +60,7 @@ const Navbar = () => {
           <SearchBox variant="desktop" />
 
           {/* Actions & User Nav */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             {/* Currency Switcher */}
             <CurrencySelector />
 
@@ -233,13 +233,13 @@ const Navbar = () => {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-brand-600 transition-colors"
+                  className="hidden sm:block px-4 py-2 text-sm font-semibold text-slate-700 hover:text-brand-600 transition-colors"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
-                  className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white rounded-xl shadow-sm hover:shadow-glow transition-all"
+                  className="whitespace-nowrap px-3.5 sm:px-4 py-2 text-sm font-semibold bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white rounded-xl shadow-sm hover:shadow-glow transition-all"
                 >
                   Sign Up
                 </Link>
