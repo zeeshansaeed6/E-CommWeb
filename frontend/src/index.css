@@ -16,6 +16,9 @@
 }
 
 @layer utilities {
+  /* Line mask used by SplitText reveals */
+  .split-line { overflow: hidden; padding-bottom: 0.08em; }
+
   .no-scrollbar { scrollbar-width: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
 

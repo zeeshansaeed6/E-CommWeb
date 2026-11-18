@@ -19,6 +19,8 @@ import {
 import { addToCart } from '../redux/slices/cartSlice';
 import ImageGallery from '../components/product/ImageGallery';
 import LuxuryProductPage from '../components/product/LuxuryProductPage';
+import EditorialProductPage from '../components/product/themes/EditorialProductPage';
+import { themeFor } from '../components/product/themes/productTheme';
 import ProductShowcase, { ProductLocalNav } from '../components/product/ProductShowcase';
 import Rating from '../components/common/Rating';
 import Loader from '../components/common/Loader';
@@ -26,6 +28,12 @@ import Alert from '../components/common/Alert';
 import useCurrency from '../hooks/useCurrency';
 import RecentlyViewed from '../components/product/RecentlyViewed';
 import { recordRecentlyViewed } from '../hooks/useRecentlyViewed';
+
+// Themes with their own page experience; anything else uses the cinematic tech layout below
+const THEME_PAGES = {
+  luxury: LuxuryProductPage,
+  editorial: EditorialProductPage,
+};
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -106,10 +114,11 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="space-y-12">
-      {product.theme === 'luxury' ? (
-        <>
-          <LuxuryProductPage product={product} onAdd={(n) => handleAddToCart(n)} />
-        </>
+      {THEME_PAGES[themeFor(product)] ? (
+        (() => {
+          const ThemePage = THEME_PAGES[themeFor(product)];
+          return <ThemePage product={product} onAdd={(n) => handleAddToCart(n)} />;
+        })()
       ) : (
         <>
       <ProductLocalNav product={product} />
